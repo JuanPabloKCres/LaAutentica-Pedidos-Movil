@@ -29,6 +29,5 @@
                 android:value="com.example.suiza.pedidos_en_sony.MainActivity" />
         </activity>
 
-
     </application>
 </manifest>

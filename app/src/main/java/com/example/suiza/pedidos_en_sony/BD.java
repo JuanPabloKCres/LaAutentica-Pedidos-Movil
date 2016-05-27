@@ -22,18 +22,20 @@ public class BD extends SQLiteOpenHelper {
 
 
  /*** Cargado y Reseteado de Tablas ***/
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE Clientes(id INTEGER PRIMARY KEY AUTOINCREMENT, cod_Cliente INTEGER, razonSocial TEXT, nombreFantasia TEXT, cod_Vendedor INTEGER, direccion TEXT, telefono TEXT, zona INTEGER)");
-      //  db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY AUTOINCREMENT, cod_Producto INTEGER, nombre TEXT, descripcion TEXT, precio_uni REAL, disponible INTEGER)");
+        db.execSQL("CREATE TABLE Clientes(id INTEGER PRIMARY KEY, cod_Cliente INTEGER, razonSocial TEXT, nombreFantasia TEXT, cod_Vendedor INTEGER, direccion TEXT, telefono TEXT, zona INTEGER)");
+        db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY, cod_Producto INTEGER, nombre TEXT, precio_uni REAL, disponible TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS Clientes");
-        db.execSQL("CREATE TABLE Clientes(id INTEGER PRIMARY KEY AUTOINCREMENT, cod_Cliente INTEGER, razonSocial TEXT, nombreFantasia TEXT, cod_Vendedor INTEGER, direccion TEXT, telefono TEXT, zona INTEGER)");
-       // db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY AUTOINCREMENT, cod_Producto INTEGER, nombre TEXT, descripcion TEXT, precio_uni REAL, disponible BOOLEAN)");
+        db.execSQL("DROP TABLE IF EXISTS Productos");
 
+        db.execSQL("CREATE TABLE Clientes(id INTEGER PRIMARY KEY, cod_Cliente INTEGER, razonSocial TEXT, nombreFantasia TEXT, cod_Vendedor INTEGER, direccion TEXT, telefono TEXT, zona INTEGER)");
+        db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY, cod_Producto INTEGER, nombre TEXT, precio_uni REAL, disponible TEXT)");
        // db.execSQL("CREATE TABLE Productos_Pedidos(id INTEGER PRIMARY KEY AUTOINCREMENT," +
               //              "FOREIGN KEY(id_producto) REFERENCES Productos(id), cantidad INTEGER, subtotalProducto REAL)");
 
@@ -43,6 +45,7 @@ public class BD extends SQLiteOpenHelper {
 
     public void onDelete(SQLiteDatabase db){
         db.execSQL("DROP TABLE IF EXISTS Clientes");
+        db.execSQL("DROP TABLE IF EXISTS Productos");
     }
 
 
