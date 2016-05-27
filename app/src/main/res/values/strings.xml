@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Pedidos_en_Sony</string>
+    <string name="action_settings">Opciones</string>
+    <string name="clientesdeldiaBtn">Clientes del dia</string>
+    <string name="productosBtn">Productos</string>
+    <string name="nvoPedidoBtn">Nuevo Pedido</string>
+    <string name="syncBtn">SYNC</string>
+
+    <string name="activity_pedidos">Nuevo Pedido!</string>
+    <string name="title_activity_activity_pedido2">activity_pedido2</string>
+</resources>

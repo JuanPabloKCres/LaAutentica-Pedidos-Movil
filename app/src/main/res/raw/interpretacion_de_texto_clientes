@@ -1,0 +1,10 @@
+-Cada linea es el registro de un cliente
+-Cada atributo de un cliente esta separado por el caracter ";"
+-De izquierda a derecha los artibutos son:
+                                            Codigo Cliente (importado desde el sistema de escritorio)
+                                            Razon Social
+                                            Nombre de Fantasia
+                                            CUIT
+                                            Direccion
+                                            Teléfono
+                                            Zona
