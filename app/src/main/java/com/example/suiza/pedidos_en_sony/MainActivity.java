@@ -35,9 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.nvoPedidoFB);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         nvoPedidoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //syncClientesconTxt();
                 Intent intent = new Intent(MainActivity.this, Pedidos.class);
                 startActivity(intent);
             }

@@ -60,16 +60,8 @@ public class Pedidos extends AppCompatActivity  {
         setContentView(R.layout.activity_pedidos);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-       /*******************************/
-
-        //inflarSpinnerProductos();
-       /*******************************/
 
 
-        /********* Ni bien se abre el activity, sincroniza BD desde TXT *****************/
-//        syncClientesconTxt();
-        //syncProductosconTxt();
-        /********************************************************************************/
         //FloatingActionButton agregarProductoFB = (FloatingActionButton) findViewById(R.id.agregarProductoFB);
         CantidadTxt = (EditText)findViewById(R.id.CantidadFijoTxt);
         //SubtotalTxt = (EditText)findViewById(R.id.SubtotalFijoTxt);
@@ -110,12 +102,16 @@ public class Pedidos extends AppCompatActivity  {
         */
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        syncClientesconTxt();
-        inflarSpinnerClientes();
-        syncProductosconTxt();
-        inflarSpinnerProductos();
 
-        Toast.makeText(Pedidos.this, "Registre un pedido", Toast.LENGTH_SHORT).show();
+        /********* Ni bien se abre el activity, sincroniza BD desde TXT *****************/
+        syncClientesconTxt();
+        syncProductosconTxt();
+        inflarSpinnerClientes();
+        inflarSpinnerProductos();
+        /********************************************************************************/
+
+
+        Toast.makeText(Pedidos.this, "Aqui puede registrar un pedido ?", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -195,8 +191,6 @@ public class Pedidos extends AppCompatActivity  {
 
         String selectQuery = "SELECT * FROM Clientes";
         Cursor cursor = bd.rawQuery(selectQuery, null);
-        Toast.makeText(Pedidos.this, " ", Toast.LENGTH_SHORT).show();
-
         if (cursor.moveToFirst()) {
             do {
                 ListaClientes.add(cursor.getString(2));
@@ -218,8 +212,6 @@ public class Pedidos extends AppCompatActivity  {
 
         String selectQuery = "SELECT * FROM Productos";
         Cursor cursor = bd.rawQuery(selectQuery, null);
-        Toast.makeText(Pedidos.this, " ", Toast.LENGTH_SHORT).show();
-
         if (cursor.moveToFirst()) {
             do {
                 ListaProductos.add(cursor.getString(2));
@@ -260,40 +252,6 @@ public class Pedidos extends AppCompatActivity  {
 
 
 
-    /********************* Metodo para recorrer la tabla PRODUCTOS con el Cursor*****************************/
-   /*
-    public List<String> leerTablaProductos(){
-        SQLiteDatabase bd = admin.getReadableDatabase();
-        List<String> ListaProductos = new ArrayList<String>();
-
-        String selectQuery = "SELECT * FROM "+productos.NOMBRE_TABLA+"";
-        Cursor cursor = bd.rawQuery(selectQuery, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                ListaProductos.add(cursor.getString(1));
-            }while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        bd.close();
-        return (ListaProductos);
-    }
-    */
-
-    /**************************** Inflar Spinner con la lista obtenida **********************/
-    /*
-    public void inflarSpinnerProductos(){
-        List<String> ListaProductos = leerTablaProductos();
-        ArrayAdapter<String> AdaptadorProductoSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, ListaProductos);
-
-        // estilo de spinner
-        AdaptadorProductoSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // vincular adaptador al spinner
-        ProductoSpinner.setAdapter(AdaptadorProductoSpinner);
-    }
-*/
 
     /******************************** Calcular Subtotal ********************************/
     private void calcSubtotal(View v){
@@ -363,12 +321,16 @@ public class Pedidos extends AppCompatActivity  {
 
 
 
+////////////para CLIENTES///////////
 
-
-
-
-
-////////////para CLIENTES
+    /*********** Conseguir la cantidad de registros (filas) que tiene una tabla ***************/
+    private long cantidadRegistrosClientes(){
+        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
+        SQLiteDatabase db = admin.getReadableDatabase();
+        long registros = DatabaseUtils.queryNumEntries(db, "Clientes");
+        db.close();
+        return registros;
+    }
     /********** Lee el txt fuente y devuelve su contenido separado por los "enter" **********/
     private String[] leerArchivoClientesTxt(){
         InputStream inputStream = getResources().openRawResource(R.raw.clientes);   //abre el recurso "clientes.txt" en la carpeta raw de R (Resources)
@@ -390,51 +352,34 @@ public class Pedidos extends AppCompatActivity  {
     /*************** Meter el txt en una tabla de BD ********************/
 
     private void syncClientesconTxt(){
-        if(cantidadRegistrosClientes()!=0){      //SI la tabla "Clientes" tiene algun registro, dropear la tabla
+        if(cantidadRegistrosClientes()==0){         //SI la tabla "Clientes" tiene algun registro, dropear la tabla
+            String[] texto = leerArchivoClientesTxt();           //"texto" tendra un array de strings donde cada renglon es una celda
             BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-            admin.onDelete(admin.getReadableDatabase());
-            Toast.makeText(this,"Las tablas ya se encontraban sincronizadas al los '.txt'", Toast.LENGTH_LONG).show();
+            SQLiteDatabase db = admin.getWritableDatabase();
+            db.beginTransaction();
+            for (int i=0; i<texto.length; i++){
+                String[] linea = texto[i].split(";");
+                ContentValues valoresContenidos = new ContentValues();
+                valoresContenidos.put("cod_Cliente",linea[0]);
+                valoresContenidos.put("razonSocial",linea[1]);
+                valoresContenidos.put("nombreFantasia", linea[2]);
+                valoresContenidos.put("cod_Vendedor",linea[3]);
+                valoresContenidos.put("direccion", linea[4]);
+                valoresContenidos.put("telefono",linea[5]);
+                valoresContenidos.put("zona", linea[6]);
+                db.insert("Clientes", null, valoresContenidos);
+            }
+            Toast.makeText(this, "Registros insertados: " + texto.length, Toast.LENGTH_LONG).show();
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }else{
+            Toast.makeText(Pedidos.this, "La tabla Clientes ya estaba OK!", Toast.LENGTH_SHORT).show();
         }
-
-        String[] texto = leerArchivoClientesTxt();         //"texto" tendra un array de strings donde cada renglon es una celda
-        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-        SQLiteDatabase db = admin.getWritableDatabase();
-        db.beginTransaction();
-
-        for (int i=0; i<texto.length; i++){
-            String[] linea = texto[i].split(";");
-            //Toast.makeText(this, texto.toString(), Toast.LENGTH_LONG).show();
-
-            ContentValues valoresContenidos = new ContentValues();
-            valoresContenidos.put("cod_Cliente",linea[0]);
-            valoresContenidos.put("razonSocial",linea[1]);
-            valoresContenidos.put("nombreFantasia", linea[2]);
-            valoresContenidos.put("cod_Vendedor",linea[3]);
-            valoresContenidos.put("direccion", linea[4]);
-            valoresContenidos.put("telefono",linea[5]);
-            valoresContenidos.put("zona", linea[6]);
-            db.insert("Clientes", null, valoresContenidos);
-        }
-
-        Toast.makeText(this, "Registros insertados!" + texto.length, Toast.LENGTH_LONG).show();
-        db.setTransactionSuccessful();
-        db.endTransaction();
-
     }
 
 
-    /*********** Conseguir la cantidad de filas (registros) que tiene una tabla ***************/
-    private long cantidadRegistrosClientes(){       // Devuelve la cantidad de filas que tiene una tabla
-        Toast.makeText(this,"estamos dentro del metodo 'cantidadRegistrosClientes'", Toast.LENGTH_LONG).show();
-        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-        SQLiteDatabase db = admin.getReadableDatabase();
-        long filas = DatabaseUtils.queryNumEntries(db, "Clientes");
-        db.close();
-        return filas;
+/////////// para PRODUCTOS /////////////
 
-    }
-
-///////////para PRODUCTOS
     /********** Lee el txt fuente y devuelve su contenido separado por los "enter" **********/
     private String[] leerArchivoProductosTxt(){
         InputStream inputStream = getResources().openRawResource(R.raw.productos);   //abre el recurso "clientes.txt" en la carpeta raw de R (Resources)
@@ -455,41 +400,35 @@ public class Pedidos extends AppCompatActivity  {
 
     /*************** Meter el txt en una tabla de BD ********************/
 
-    private void syncProductosconTxt(){
-        if(cantidadRegistrosProductos()!=0){      //SI la tabla "Clientes" tiene algun registro, dropear la tabla
+    private void syncProductosconTxt() {
+        if (cantidadRegistrosProductos() == 0) {      //SI la tabla "Clientes" tiene algun registro, dropear la tabla
+            String[] texto = leerArchivoProductosTxt();         //"texto" tendra un array de strings donde cada renglon es una celda
             BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-            admin.onDelete(admin.getReadableDatabase());
-            Toast.makeText(this,"La tabla 'Productos' ya se encontraba sincronizadas al los '.txt'", Toast.LENGTH_LONG).show();
+            SQLiteDatabase db = admin.getWritableDatabase();
+            db.beginTransaction();
+
+            for (int i = 0; i < texto.length; i++) {
+                String[] linea = texto[i].split(";");
+                ContentValues valoresContenidos = new ContentValues();
+                valoresContenidos.put("cod_Producto", linea[0]);
+                valoresContenidos.put("nombre", linea[1]);
+                valoresContenidos.put("precio_uni", linea[2]);
+                valoresContenidos.put("disponible", linea[3]);
+                db.insert("Productos", null, valoresContenidos);
+            }
+
+            Toast.makeText(this, "Registros insertados en PRODUCTOS: " + texto.length, Toast.LENGTH_LONG).show();
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } else {
+            Toast.makeText(this, "La tabla PRODUCTOS ya se encontraba sincronizadas al los '.txt'", Toast.LENGTH_LONG).show();
         }
-
-        String[] texto = leerArchivoProductosTxt();         //"texto" tendra un array de strings donde cada renglon es una celda
-        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-        SQLiteDatabase db = admin.getWritableDatabase();
-        db.beginTransaction();
-
-        for (int i=0; i<texto.length; i++){
-            String[] linea = texto[i].split(";");
-            //Toast.makeText(this, texto.toString(), Toast.LENGTH_LONG).show();
-
-            ContentValues valoresContenidos = new ContentValues();
-            valoresContenidos.put("cod_Producto",linea[0]);
-            valoresContenidos.put("nombre",linea[1]);
-            valoresContenidos.put("precio_uni", linea[2]);
-            valoresContenidos.put("disponible",linea[3]);
-            db.insert("Productos", null, valoresContenidos);
-        }
-
-        Toast.makeText(this, "Registros insertados en PRODUCTOS: " + texto.length, Toast.LENGTH_LONG).show();
-        db.setTransactionSuccessful();
-        db.endTransaction();
-
     }
 
 
     /*********** Conseguir la cantidad de filas (registros) que tiene una tabla ***************/
 
     private long cantidadRegistrosProductos(){       // Devuelve la cantidad de filas que tiene una tabla
-        Toast.makeText(this,"estamos dentro del metodo 'cantidadRegistrosProductos'", Toast.LENGTH_LONG).show();
         BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
         SQLiteDatabase db = admin.getReadableDatabase();
         long filas = DatabaseUtils.queryNumEntries(db, "Productos");

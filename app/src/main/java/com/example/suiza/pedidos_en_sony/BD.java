@@ -31,11 +31,11 @@ public class BD extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS Clientes");
+        /*db.execSQL("DROP TABLE IF EXISTS Clientes");
         db.execSQL("DROP TABLE IF EXISTS Productos");
 
         db.execSQL("CREATE TABLE Clientes(id INTEGER PRIMARY KEY, cod_Cliente INTEGER, razonSocial TEXT, nombreFantasia TEXT, cod_Vendedor INTEGER, direccion TEXT, telefono TEXT, zona INTEGER)");
-        db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY, cod_Producto INTEGER, nombre TEXT, precio_uni REAL, disponible TEXT)");
+        db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY, cod_Producto INTEGER, nombre TEXT, precio_uni REAL, disponible TEXT)");*/
        // db.execSQL("CREATE TABLE Productos_Pedidos(id INTEGER PRIMARY KEY AUTOINCREMENT," +
               //              "FOREIGN KEY(id_producto) REFERENCES Productos(id), cantidad INTEGER, subtotalProducto REAL)");
 
