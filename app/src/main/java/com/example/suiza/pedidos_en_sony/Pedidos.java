@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +36,7 @@ public class Pedidos extends AppCompatActivity  {
     private EditText SubtotalTxt;
     private EditText CantidadExtraTxt;
     private EditText SubtotalExtraTxt;
+    private EditText productoTxt;
     private Spinner ClienteSpinner;
     private Spinner ProductoSpinner;
     private FloatingActionButton agregarProductoFB;
@@ -62,17 +62,11 @@ public class Pedidos extends AppCompatActivity  {
         setSupportActionBar(toolbar);
 
 
-        //FloatingActionButton agregarProductoFB = (FloatingActionButton) findViewById(R.id.agregarProductoFB);
         CantidadTxt = (EditText)findViewById(R.id.CantidadFijoTxt);
-        //SubtotalTxt = (EditText)findViewById(R.id.SubtotalFijoTxt);
-        FloatingActionButton agregarProductoFB = (FloatingActionButton) findViewById(R.id.nvoPedidoFB);
-
+        agregarProductoFB = (FloatingActionButton) findViewById(R.id.agregarProductoFB);
         ScrollView sv = (ScrollView)findViewById(R.id.scrollView);
-
         ClienteSpinner = (Spinner)findViewById(R.id.ClienteSpinner);
         ProductoSpinner = (Spinner)findViewById(R.id.ProductoSpinner);
-
-        agregarProductoFB = (FloatingActionButton)findViewById(R.id.nvoProductoFB);
         ConfirmarPedidoBtn = (Button)findViewById(R.id.ConfirmarPedidoBtn);
         /************************************************************************************/
 
@@ -80,7 +74,8 @@ public class Pedidos extends AppCompatActivity  {
         agregarProductoFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Este boton va a servir para agregar un pedido...", Snackbar.LENGTH_LONG)
+                contadorDePulsaciones++;
+                Snackbar.make(v, "Se ha a agregado un Producto al pedido, (van" +contadorDePulsaciones+")", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 inflarLayout();
                 //calcSubtotal(v);
@@ -111,7 +106,7 @@ public class Pedidos extends AppCompatActivity  {
         /********************************************************************************/
 
 
-        Toast.makeText(Pedidos.this, "Aqui puede registrar un pedido ?", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Pedidos.this, "Aqui puede registrar un pedido", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -128,20 +123,18 @@ public class Pedidos extends AppCompatActivity  {
 
 
     
-    /******************* Inflar Layout con los extra *********************/
+                    /******************* Inflar Layout con los extra *********************/
     private void inflarLayout() {
-        LinearLayout layout_contenedor = (LinearLayout) findViewById(R.id.contenido);
-        View child = getLayoutInflater().inflate(R.layout.layout_subtotal, null);
-
+        LinearLayout layout_contenedor = (LinearLayout) findViewById(R.id.contenedor);  //Layout 'Padre'
+        View child = getLayoutInflater().inflate(R.layout.layout_subtotal, null);       //Layout 'Hijo'
+        //Componentes del Layout Hijo
+        final EditText productoTxt = (EditText)child.findViewById(R.id.productoTxt);
         final EditText CantidadExtraTxt = (EditText)child.findViewById(R.id.CantidadExtraTxt);
         final EditText SubTotalExtraTxt = (EditText)child.findViewById(R.id.SubtotalExtraTxt);
 
-        layout_contenedor.addView(child, contadorDePulsaciones);
-        contadorDePulsaciones++;                                    //Contamos un nuevo producto pedido
-        /*private EditText CantidadExtraTxt;
-        CantidadExtraTxt=(EditText)findViewById(R.id.CantidadTxtExtra + contadorDePulsaciones); */
-        //editTextListCantidad.add(CantidadExtraTxt);
+        layout_contenedor.addView(child);
 
+        editTextListCantidad.add(CantidadExtraTxt);
 
         /*******When the magic happends (StackOverflow)********/
         //final EditText editText = new EditText(this);
@@ -152,7 +145,6 @@ public class Pedidos extends AppCompatActivity  {
         findViewById.addView(editText);
         allEds.add(editText);
         /************************</>***************************/
-
     }
 
 
