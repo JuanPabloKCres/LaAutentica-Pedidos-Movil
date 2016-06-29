@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ScrollView01"
+    android:id="@+id/ScrollViewExtra"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -17,53 +17,62 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Producto:"
             android:id="@+id/ProductoLblExtra"
+            android:layout_marginTop="84dp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="79dp" />
+            android:layout_toStartOf="@+id/productoTxt" />
 
-    <TextView
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/productoTxt"
+            android:layout_alignBottom="@+id/ProductoLblExtra"
+            android:layout_toEndOf="@+id/CantidadLblExtra" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Cantidad:"
             android:id="@+id/CantidadLblExtra"
             android:layout_marginRight="55dp"
-        android:layout_alignBaseline="@+id/CantidadExtraTxt"
-        android:layout_alignBottom="@+id/CantidadExtraTxt" />
+            android:layout_above="@+id/textView"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="49dp" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberSigned"
-            android:ems="5"
             android:id="@+id/CantidadExtraTxt"
-            android:layout_marginTop="25dp"
             android:layout_below="@+id/ProductoLblExtra"
             android:layout_alignStart="@+id/productoTxt" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Subtotal:"
+            android:id="@+id/textView"
+            android:layout_below="@+id/CantidadExtraTxt"
+            android:layout_alignEnd="@+id/CantidadLblExtra"
+            android:layout_marginTop="29dp" />
 
-    <EditText
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/SubtotalExtraTxt"
+            android:layout_below="@+id/textView"
+            android:layout_alignStart="@+id/textView"
+            android:layout_alignEnd="@+id/CantidadExtraTxt" />
+
+    <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/productoTxt"
-        android:layout_above="@+id/CantidadExtraTxt"
-        android:layout_toEndOf="@+id/ProductoLblExtra" />
+        android:text="Solicitado"
+        android:id="@+id/solicitadoSwitch"
+        android:checked="false"
+        android:layout_above="@+id/productoTxt"
+        android:layout_alignEnd="@+id/productoTxt" />
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/SubtotalExtraTxt"
-        android:layout_below="@+id/textView"
-        android:layout_alignStart="@+id/textView" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Subtotal:"
-        android:id="@+id/textView"
-        android:layout_below="@+id/CantidadExtraTxt"
-        android:layout_alignEnd="@+id/CantidadLblExtra"
-        android:layout_marginTop="29dp" />
 </RelativeLayout>
 </ScrollView>

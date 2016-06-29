@@ -18,7 +18,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Pedidos"
             android:label="@string/activity_pedidos"
@@ -28,6 +27,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.suiza.pedidos_en_sony.MainActivity" />
         </activity>
-
+        <activity
+            android:name=".cVenta"
+            android:label="@string/title_activity_c_venta"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
+
 </manifest>

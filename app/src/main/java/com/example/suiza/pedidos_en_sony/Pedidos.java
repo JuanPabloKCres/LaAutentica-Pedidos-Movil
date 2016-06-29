@@ -1,6 +1,5 @@
 package com.example.suiza.pedidos_en_sony;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -11,21 +10,23 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.BreakIterator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import java.util.List;
 public class Pedidos extends AppCompatActivity  {
 
     private EditText CantidadTxt;
+    private EditText PrecioUnitarioTxt;
     private EditText SubtotalTxt;
     private EditText CantidadExtraTxt;
     private EditText SubtotalExtraTxt;
@@ -63,38 +65,51 @@ public class Pedidos extends AppCompatActivity  {
 
 
         CantidadTxt = (EditText)findViewById(R.id.CantidadFijoTxt);
+        PrecioUnitarioTxt = (EditText)findViewById(R.id.PrecioUnitarioTxt);
+        SubtotalExtraTxt = (EditText)findViewById(R.id.SubtotalExtraTxt);
         agregarProductoFB = (FloatingActionButton) findViewById(R.id.agregarProductoFB);
         ScrollView sv = (ScrollView)findViewById(R.id.scrollView);
         ClienteSpinner = (Spinner)findViewById(R.id.ClienteSpinner);
         ProductoSpinner = (Spinner)findViewById(R.id.ProductoSpinner);
         ConfirmarPedidoBtn = (Button)findViewById(R.id.ConfirmarPedidoBtn);
+
         /************************************************************************************/
 
 
         agregarProductoFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contadorDePulsaciones++;
-                Snackbar.make(v, "Se ha a agregado un Producto al pedido, (van" +contadorDePulsaciones+")", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                inflarLayout();
-                //calcSubtotal(v);
+                int total = 0;
+
+                    contadorDePulsaciones++;
+                    Snackbar.make(v, "Se ha a agregado un Producto al pedido, (van" +contadorDePulsaciones+")", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+
+                    inflarLayout();     // ahora es inflarLayout + calcSubtotal
+
+                //Toast.makeText(Pedidos.this, "No se puede agregar un producto sin especificar la cantidad", Toast.LENGTH_SHORT).show();
+
             }
         });
 
-
-        /*
-        agregarProductoFB.setOnClickListener(new View.OnClickListener() {
+        ProductoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Este boton permite agregar mas productos...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String producto= ProductoSpinner.getSelectedItem().toString();
 
-                inflarLayout();
-                calcSubtotal(view);
+                int precio = precioDelProductoElegido(producto);
+                //Toast.makeText(Pedidos.this, "El precio devuelto por la funcion es " +precio, Toast.LENGTH_SHORT).show();
+                PrecioUnitarioTxt.setText("$ "+precio);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
-        */
+
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -122,19 +137,57 @@ public class Pedidos extends AppCompatActivity  {
     }
 
 
-    
+
                     /******************* Inflar Layout con los extra *********************/
     private void inflarLayout() {
         LinearLayout layout_contenedor = (LinearLayout) findViewById(R.id.contenedor);  //Layout 'Padre'
-        View child = getLayoutInflater().inflate(R.layout.layout_subtotal, null);       //Layout 'Hijo'
-        //Componentes del Layout Hijo
-        final EditText productoTxt = (EditText)child.findViewById(R.id.productoTxt);
-        final EditText CantidadExtraTxt = (EditText)child.findViewById(R.id.CantidadExtraTxt);
-        final EditText SubTotalExtraTxt = (EditText)child.findViewById(R.id.SubtotalExtraTxt);
+        View hijo = getLayoutInflater().inflate(R.layout.layout_subtotal, null);       //Layout 'Hijo'
+        layout_contenedor.addView(hijo);
 
-        layout_contenedor.addView(child);
+
+
+        //Componentes del Layout Hijo
+        EditText productoTxt = (EditText)hijo.findViewById(R.id.productoTxt);
+        EditText CantidadExtraTxt = (EditText)hijo.findViewById(R.id.CantidadExtraTxt);
+        EditText SubTotalTxt = (EditText)hijo.findViewById(R.id.SubtotalExtraTxt);
+
 
         editTextListCantidad.add(CantidadExtraTxt);
+
+       ////////////////////////////////////// parte de calcSubtotal /////////////////////////////////////////
+        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        String producto;
+        int cantidad=0, precio=0, subtotal = 0, total = 0;
+
+        cantidad = Integer.parseInt(CantidadTxt.getText().toString());      //forzar al EditText a convertir a entero la cantidad
+        producto = ProductoSpinner.getSelectedItem().toString();            //conseguimos lo que esta seleccionado en el ProductoSpinner
+
+
+        Cursor fila = bd.rawQuery("SELECT * FROM Productos WHERE nombre= '" + producto+"'", null);
+        if (fila.moveToFirst()) {
+            precio = fila.getInt(3);
+            Toast.makeText(this, "El precio del producto es $"+precio, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Ocurrio un error al calcular el subtotal :(", Toast.LENGTH_SHORT).show();
+        }
+
+        Toast.makeText(this, "El precio leido es $" + precio, Toast.LENGTH_SHORT).show();
+        subtotal = (precio * cantidad);
+        Toast.makeText(this, "El subtotal es $" + subtotal, Toast.LENGTH_SHORT).show();
+
+        SubTotalTxt.setText("$ "+subtotal);
+
+
+
+        productoTxt.setText(producto);
+        CantidadExtraTxt.setText(CantidadTxt.getText());
+        bd.close();
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
         /*******When the magic happends (StackOverflow)********/
         //final EditText editText = new EditText(this);
@@ -149,31 +202,6 @@ public class Pedidos extends AppCompatActivity  {
 
 
 
-    private void subTotalExtras(){
-        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-        SQLiteDatabase bd = admin.getWritableDatabase();
-        String producto;
-        int cantidad=0, precio=0, subtotal=0;
-
-        cantidad = Integer.parseInt(CantidadTxt.getText().toString());      //forzar al EditText a convertir a entero la cantidad
-        producto = ProductoSpinner.getSelectedItem().toString();            //conseguimos lo que esta seleccionado en el ProductoSpinner
-
-        Cursor fila = bd.rawQuery("SELECT * FROM Productos WHERE nombre= '" + producto+"'", null);
-        if (fila.moveToFirst()) {
-            precio = fila.getInt(3);
-            //Toast.makeText(this, "Se encontro un cliente...", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Ocurrio un error al calcular el subtotal :(", Toast.LENGTH_SHORT).show();
-        }
-
-        Toast.makeText(this, "El precio leido es $" + precio, Toast.LENGTH_SHORT).show();
-        subtotal = (precio * cantidad);
-        Toast.makeText(this, "El subtotal es $" + subtotal, Toast.LENGTH_SHORT).show();
-        SubtotalTxt.setText("$" + subtotal);
-        bd.close();
-    }
-
-
     /***************** Metodo para recorrer la tabla CLientes con el Cursor *******************/
     public List<String> leerTablaClientes(){
         BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
@@ -186,7 +214,7 @@ public class Pedidos extends AppCompatActivity  {
         if (cursor.moveToFirst()) {
             do {
                 ListaClientes.add(cursor.getString(2));
-                Toast.makeText(Pedidos.this, "Cod.de clientes registrados: "+cursor.getString(1), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Pedidos.this, "Cod.de clientes registrados: "+cursor.getString(1), Toast.LENGTH_SHORT).show();
             }while (cursor.moveToNext());
         }
         cursor.close();
@@ -207,7 +235,7 @@ public class Pedidos extends AppCompatActivity  {
         if (cursor.moveToFirst()) {
             do {
                 ListaProductos.add(cursor.getString(2));
-                Toast.makeText(Pedidos.this, "Cod.de productos registrados: "+cursor.getString(1), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Pedidos.this, "Cod.de productos registrados: "+cursor.getString(1), Toast.LENGTH_SHORT).show();
             }while (cursor.moveToNext());
         }
         cursor.close();
@@ -240,74 +268,11 @@ public class Pedidos extends AppCompatActivity  {
         // attaching data adapter to spinner
         ProductoSpinner.setAdapter(AdaptadorProductoSpinner);
     }
+
     /******************************************************************************/
-
-
-
-
-    /******************************** Calcular Subtotal ********************************/
-    private void calcSubtotal(View v){
-        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-        SQLiteDatabase bd = admin.getWritableDatabase();
-        String producto;
-        int cantidad=0, precio=0, subtotal=0;
-
-
-        cantidad = Integer.parseInt(CantidadTxt.getText().toString());      //forzar al EditText a convertir a entero la cantidad
-        producto = ProductoSpinner.getSelectedItem().toString();            //conseguimos lo que esta seleccionado en el ProductoSpinner
-
-
-        Cursor fila = bd.rawQuery("SELECT * FROM Productos WHERE nombre= '" + producto+"'", null);
-            if (fila.moveToFirst()) {
-                precio = fila.getInt(3);
-                //Toast.makeText(this, "Se encontro un cliente...", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Ocurrio un error al calcular el subtotal :(", Toast.LENGTH_SHORT).show();
-            }
-
-        Toast.makeText(this, "El precio leido es $" + precio, Toast.LENGTH_SHORT).show();
-        subtotal = (precio * cantidad);
-        Toast.makeText(this, "El subtotal es $" + subtotal, Toast.LENGTH_SHORT).show();
-        SubtotalTxt.setText("$" + subtotal);
-        bd.close();
-    }
-
-    /********************* "Experimento 13-3-2016" para recorrer un txt CLientes con el Cursor  ****************************/
-    public List<String> leerTxtClientes(){
-        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-        SQLiteDatabase bd = admin.getReadableDatabase();
-        List<String> ListaClientes = new ArrayList<String>();
-
-        String selectQuery = "SELECT * FROM Clientes";
-        Cursor cursor = bd.rawQuery(selectQuery, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                ListaClientes.add(cursor.getString(1));
-            }while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        bd.close();
-
-        return (ListaClientes);
-    }
-    /****************************************************************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /******************************************************************************/
+    /******************************************************************************/
+    /******************************************************************************/
 
 
 
@@ -350,7 +315,7 @@ public class Pedidos extends AppCompatActivity  {
             SQLiteDatabase db = admin.getWritableDatabase();
             db.beginTransaction();
             for (int i=0; i<texto.length; i++){
-                String[] linea = texto[i].split(";");
+                String[] linea = texto[i].split(",");
                 ContentValues valoresContenidos = new ContentValues();
                 valoresContenidos.put("cod_Cliente",linea[0]);
                 valoresContenidos.put("razonSocial",linea[1]);
@@ -400,11 +365,11 @@ public class Pedidos extends AppCompatActivity  {
             db.beginTransaction();
 
             for (int i = 0; i < texto.length; i++) {
-                String[] linea = texto[i].split(";");
+                String[] linea = texto[i].split(",");
                 ContentValues valoresContenidos = new ContentValues();
                 valoresContenidos.put("cod_Producto", linea[0]);
                 valoresContenidos.put("nombre", linea[1]);
-                valoresContenidos.put("precio_uni", linea[2]);
+                valoresContenidos.put("precio", linea[2]);
                 valoresContenidos.put("disponible", linea[3]);
                 db.insert("Productos", null, valoresContenidos);
             }
@@ -427,5 +392,29 @@ public class Pedidos extends AppCompatActivity  {
         db.close();
         return filas;
 
+    }
+
+                    /**** Devolver el precio de un producto seleccionado ****/
+    private int precioDelProductoElegido(String producto){
+        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
+        SQLiteDatabase bd = admin.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM Productos WHERE nombre = '"+producto+"'";
+        Cursor cursor = bd.rawQuery(selectQuery, null);
+        int precio=0;
+        if (cursor.moveToFirst()) {         //falso si el cursor esta vacio
+            precio = cursor.getInt(3);
+         // Toast.makeText(Pedidos.this, "El precio leido es " +precio, Toast.LENGTH_SHORT).show();
+        }
+
+
+        //int precio = cursor.getInt(3);
+
+        cursor.close();
+        bd.close();
+
+        //PrecioUnitarioTxt.setText(precio);
+        Toast.makeText(Pedidos.this, "El precio leido es " +precio, Toast.LENGTH_SHORT).show();
+        return precio;
     }
 }

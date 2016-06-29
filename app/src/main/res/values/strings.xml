@@ -8,4 +8,5 @@
 
     <string name="activity_pedidos">Nuevo Pedido!</string>
     <string name="title_activity_activity_pedido2">activity_pedido2</string>
+    <string name="title_activity_c_venta">cVenta</string>
 </resources>
