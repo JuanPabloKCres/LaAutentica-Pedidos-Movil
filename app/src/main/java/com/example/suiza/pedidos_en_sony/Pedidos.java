@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
@@ -38,17 +39,20 @@ public class Pedidos extends AppCompatActivity  {
     private EditText SubtotalTxt;
     private EditText CantidadExtraTxt;
     private EditText SubtotalExtraTxt;
+    private EditText TotalTxt;
     private EditText productoTxt;
     private Spinner ClienteSpinner;
     private Spinner ProductoSpinner;
     private FloatingActionButton agregarProductoFB;
     private Button ConfirmarPedidoBtn;
+    public Switch SolicitadoSwitch;
 
-    private LinearLayout LayoutExtra;
+    public LinearLayout LayoutContenedor;
     private ViewGroup layout;
 
 
-    int contadorDePulsaciones =1;
+    int contadorDePulsaciones =1;   //contador de productos pedidos
+    int total = 0;                  //total acumulado de pedido para ir mostrando en tiempo real
     private List<EditText> editTextListCantidad = new ArrayList<EditText>();
 
    /*************** Lo necesario para usar la clase BD *****************/
@@ -63,15 +67,25 @@ public class Pedidos extends AppCompatActivity  {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        SolicitadoSwitch = (Switch)findViewById(R.id.solicitadoSwitch);
+        LayoutContenedor = (LinearLayout)findViewById(R.id.contenedor);
         CantidadTxt = (EditText)findViewById(R.id.CantidadFijoTxt);
         PrecioUnitarioTxt = (EditText)findViewById(R.id.PrecioUnitarioTxt);
         SubtotalExtraTxt = (EditText)findViewById(R.id.SubtotalExtraTxt);
+        TotalTxt = (EditText)findViewById(R.id.TotalTxt);
+
         agregarProductoFB = (FloatingActionButton) findViewById(R.id.agregarProductoFB);
         ScrollView sv = (ScrollView)findViewById(R.id.scrollView);
         ClienteSpinner = (Spinner)findViewById(R.id.ClienteSpinner);
         ProductoSpinner = (Spinner)findViewById(R.id.ProductoSpinner);
         ConfirmarPedidoBtn = (Button)findViewById(R.id.ConfirmarPedidoBtn);
+        ConfirmarPedidoBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getApplicationContext(), "Se presiono el botonito", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
 
         /************************************************************************************/
 
@@ -79,27 +93,29 @@ public class Pedidos extends AppCompatActivity  {
         agregarProductoFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int total = 0;
-
+                if (CantidadTxt.getText() != null) {
                     contadorDePulsaciones++;
-                    Snackbar.make(v, "Se ha a agregado un Producto al pedido, (van" +contadorDePulsaciones+")", Snackbar.LENGTH_LONG)
+                    Snackbar.make(v, "Se ha a agregado un Producto al pedido, (van" + contadorDePulsaciones + ")", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
 
-                    inflarLayout();     // ahora es inflarLayout + calcSubtotal
+                    int subtotal = inflarLayout();     // ahora es inflarLayout + calcSubtotal
+                    total = total + subtotal;
+                    //Toast.makeText(Pedidos.this, "El total completo va sumando : $ "+total, Toast.LENGTH_SHORT).show();
+                    TotalTxt.setText("$" + total);
+                    //Toast.makeText(Pedidos.this, "No se puede agregar un producto sin especificar la cantidad", Toast.LENGTH_SHORT).show();
 
-                //Toast.makeText(Pedidos.this, "No se puede agregar un producto sin especificar la cantidad", Toast.LENGTH_SHORT).show();
-
+                }
             }
         });
 
         ProductoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String producto= ProductoSpinner.getSelectedItem().toString();
+                String producto = ProductoSpinner.getSelectedItem().toString();
 
                 int precio = precioDelProductoElegido(producto);
                 //Toast.makeText(Pedidos.this, "El precio devuelto por la funcion es " +precio, Toast.LENGTH_SHORT).show();
-                PrecioUnitarioTxt.setText("$ "+precio);
+                PrecioUnitarioTxt.setText("$ " + precio);
             }
 
             @Override
@@ -114,6 +130,7 @@ public class Pedidos extends AppCompatActivity  {
 
 
         /********* Ni bien se abre el activity, sincroniza BD desde TXT *****************/
+        syncVendedorconTxt();                                                               // Sincroniza datos del vendedor (propietario del celular)
         syncClientesconTxt();
         syncProductosconTxt();
         inflarSpinnerClientes();
@@ -122,7 +139,12 @@ public class Pedidos extends AppCompatActivity  {
 
 
         Toast.makeText(Pedidos.this, "Aqui puede registrar un pedido", Toast.LENGTH_SHORT).show();
-    }
+
+
+
+        }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -138,13 +160,13 @@ public class Pedidos extends AppCompatActivity  {
 
 
 
+
+
                     /******************* Inflar Layout con los extra *********************/
-    private void inflarLayout() {
-        LinearLayout layout_contenedor = (LinearLayout) findViewById(R.id.contenedor);  //Layout 'Padre'
+    public int inflarLayout() {
+        //LinearLayout layout_contenedor = (LinearLayout) findViewById(R.id.contenedor);  //Layout 'Padre'
         View hijo = getLayoutInflater().inflate(R.layout.layout_subtotal, null);       //Layout 'Hijo'
-        layout_contenedor.addView(hijo);
-
-
+        LayoutContenedor.addView(hijo);
 
         //Componentes del Layout Hijo
         EditText productoTxt = (EditText)hijo.findViewById(R.id.productoTxt);
@@ -176,28 +198,14 @@ public class Pedidos extends AppCompatActivity  {
         subtotal = (precio * cantidad);
         Toast.makeText(this, "El subtotal es $" + subtotal, Toast.LENGTH_SHORT).show();
 
-        SubTotalTxt.setText("$ "+subtotal);
+        SubTotalTxt.setText("$ " + subtotal);
 
 
 
         productoTxt.setText(producto);
         CantidadExtraTxt.setText(CantidadTxt.getText());
         bd.close();
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-        /*******When the magic happends (StackOverflow)********/
-        //final EditText editText = new EditText(this);
-        /*
-        editText.setText("");
-        editText.setFocusableInTouchMode(true);
-        editText.requestFocus();
-        findViewById.addView(editText);
-        allEds.add(editText);
-        /************************</>***************************/
+        return subtotal;
     }
 
 
@@ -334,8 +342,62 @@ public class Pedidos extends AppCompatActivity  {
         }
     }
 
+    ////////////para VENDEDOR ///////////
 
-/////////// para PRODUCTOS /////////////
+    /*********** Conseguir la cantidad de registros (filas) que tiene una tabla ***************/
+    private long cantidadRegistrosVendedor(){
+        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
+        SQLiteDatabase db = admin.getReadableDatabase();
+        long registros = DatabaseUtils.queryNumEntries(db, "Vendedor");
+        db.close();
+        return registros;
+    }
+
+    /********** Lee el txt fuente y devuelve su contenido separado por los "enter" **********/
+    private String[] leerArchivoVendedorTxt(){
+        InputStream inputStream = getResources().openRawResource(R.raw.vendedor);   //abre el recurso "clientes.txt" en la carpeta raw de R (Resources)
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  //convierte los bytes del recurso abierto a un array de Strings
+        try{
+            int i = inputStream.read();     //i contendra el valor de la posicion leida, sera igual a -1 cuando termine de recorrer el archivo de texto
+            while (i != -1){
+                byteArrayOutputStream.write(i);
+                i = inputStream.read();
+            }
+            inputStream.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return	byteArrayOutputStream.toString().split("\n");       //"\n" = "enter"
+    }
+
+
+    /*************** Meter el txt en una tabla de BD ********************/
+
+    private void syncVendedorconTxt(){
+        if(cantidadRegistrosVendedor()==0){         //SI la tabla "Vendedor" tiene algun registro, dropear la tabla
+            String[] texto = leerArchivoVendedorTxt();           //"texto" tendra un array de strings donde cada renglon es una celda
+            BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
+            SQLiteDatabase db = admin.getWritableDatabase();
+            db.beginTransaction();
+            for (int i=0; i<texto.length; i++){
+                String[] linea = texto[i].split(";");
+                ContentValues valoresContenidos = new ContentValues();
+                valoresContenidos.put("nombre",linea[0]);
+                valoresContenidos.put("telefono",linea[1]);
+                valoresContenidos.put("descripcion", linea[2]);
+
+                db.insert("Vendedor", null, valoresContenidos);
+            }
+            Toast.makeText(this, "Registros insertados: " + texto.length, Toast.LENGTH_LONG).show();
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }else{
+            Toast.makeText(Pedidos.this, "Los datos del Vendedor ya estaban Sincronizados.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+////////////////////////////////////////// para PRODUCTOS ///////////////////////////////////////////////
 
     /********** Lee el txt fuente y devuelve su contenido separado por los "enter" **********/
     private String[] leerArchivoProductosTxt(){
@@ -406,9 +468,6 @@ public class Pedidos extends AppCompatActivity  {
             precio = cursor.getInt(3);
          // Toast.makeText(Pedidos.this, "El precio leido es " +precio, Toast.LENGTH_SHORT).show();
         }
-
-
-        //int precio = cursor.getInt(3);
 
         cursor.close();
         bd.close();
