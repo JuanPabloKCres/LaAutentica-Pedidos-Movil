@@ -1,11 +1,13 @@
 package com.example.suiza.pedidos_en_sony;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,11 +30,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
+import android.support.v4.app.Fragment;
 
-public class Pedidos extends AppCompatActivity  {
+
+
+public class Pedidos extends AppCompatActivity implements View.OnClickListener, Fragmento.OnFragmentInteractionListener{
 
     private EditText CantidadTxt;
     private EditText PrecioUnitarioTxt;
@@ -67,14 +73,27 @@ public class Pedidos extends AppCompatActivity  {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        SolicitadoSwitch = (Switch)findViewById(R.id.solicitadoSwitch);
+        //Fragmento fragment = (Fragmento) getFragmentManager().findFragmentById(R.id.c);
         LayoutContenedor = (LinearLayout)findViewById(R.id.contenedor);
+        LayoutContenedor.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getApplicationContext(), "Se esta presionando el layout extra!!!", Toast.LENGTH_SHORT).show();
+                Fragmento fragmento = new Fragmento();
+                //administrador de fragmentos
+                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().remove(fragmento).commit();
+                return false;
+            }
+        });
         CantidadTxt = (EditText)findViewById(R.id.CantidadFijoTxt);
         PrecioUnitarioTxt = (EditText)findViewById(R.id.PrecioUnitarioTxt);
         SubtotalExtraTxt = (EditText)findViewById(R.id.SubtotalExtraTxt);
         TotalTxt = (EditText)findViewById(R.id.TotalTxt);
 
         agregarProductoFB = (FloatingActionButton) findViewById(R.id.agregarProductoFB);
+        agregarProductoFB.setOnClickListener(this);
+
         ScrollView sv = (ScrollView)findViewById(R.id.scrollView);
         ClienteSpinner = (Spinner)findViewById(R.id.ClienteSpinner);
         ProductoSpinner = (Spinner)findViewById(R.id.ProductoSpinner);
@@ -89,7 +108,7 @@ public class Pedidos extends AppCompatActivity  {
 
         /************************************************************************************/
 
-
+/*
         agregarProductoFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +126,7 @@ public class Pedidos extends AppCompatActivity  {
                 }
             }
         });
+*/
 
         ProductoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -125,9 +145,7 @@ public class Pedidos extends AppCompatActivity  {
         });
 
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         /********* Ni bien se abre el activity, sincroniza BD desde TXT *****************/
         syncVendedorconTxt();                                                               // Sincroniza datos del vendedor (propietario del celular)
@@ -139,7 +157,6 @@ public class Pedidos extends AppCompatActivity  {
 
 
         Toast.makeText(Pedidos.this, "Aqui puede registrar un pedido", Toast.LENGTH_SHORT).show();
-
 
 
         }
@@ -160,21 +177,56 @@ public class Pedidos extends AppCompatActivity  {
 
 
 
+    @Override
+    public void onClick (View v) {
+        if (CantidadTxt.getText() != null) {
+            contadorDePulsaciones++;
+            Snackbar.make(v, "Se ha a agregado un Producto al pedido, (van " + contadorDePulsaciones + ")", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+
+            int subtotal = inflarLayout();     // ahora es inflarLayout + calcSubtotal
+            total = total + subtotal;
+            //Toast.makeText(Pedidos.this, "El total completo va sumando : $ "+total, Toast.LENGTH_SHORT).show();
+            TotalTxt.setText("$" + total);
+            //Toast.makeText(Pedidos.this, "No se puede agregar un producto sin especificar la cantidad", Toast.LENGTH_SHORT).show();
+            //administrador de transacciones
+            //FragmentTransaction transaction = fragmentManager.beginTransaction().add(R.id.contenedor, fragmento);
+            //creamos un fragment y lo añadimos a la activity
+
+            //transaction.add(R.id.contenedor,fragmento);
+            //transaction.commit();
+
+            if (v.getId() == R.id.agregarProductoFB) {
+                Toast.makeText(getApplicationContext(), "Aparentemente funka...un poquillo", Toast.LENGTH_SHORT).show();
+                Fragmento fragmento = new Fragmento();
+                //administrador de fragmentos
+                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().add(R.id.contenedor, fragmento).commit();
+                //
+
+               // fragmento.SubTotalTxt = (EditText)v.findViewById(R.id.SubtotalExtraTxt);
+               // fragmento.SubTotalTxt.setText("$ " + subtotal);
+
+            } else
+                Toast.makeText(getApplicationContext(), "Ni se entero que aprete el boton", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+
 
 
                     /******************* Inflar Layout con los extra *********************/
     public int inflarLayout() {
-        //LinearLayout layout_contenedor = (LinearLayout) findViewById(R.id.contenedor);  //Layout 'Padre'
-        View hijo = getLayoutInflater().inflate(R.layout.layout_subtotal, null);       //Layout 'Hijo'
-        LayoutContenedor.addView(hijo);
 
         //Componentes del Layout Hijo
-        EditText productoTxt = (EditText)hijo.findViewById(R.id.productoTxt);
-        EditText CantidadExtraTxt = (EditText)hijo.findViewById(R.id.CantidadExtraTxt);
-        EditText SubTotalTxt = (EditText)hijo.findViewById(R.id.SubtotalExtraTxt);
+        //EditText productoTxt = (EditText)hijo.findViewById(R.id.productoTxt);
+        //EditText CantidadExtraTxt = (EditText)hijo.findViewById(R.id.CantidadExtraTxt);
+        //EditText SubTotalTxt = (EditText)hijo.findViewById(R.id.SubtotalExtraTxt);
 
 
-        editTextListCantidad.add(CantidadExtraTxt);
+        //editTextListCantidad.add(CantidadExtraTxt);
 
        ////////////////////////////////////// parte de calcSubtotal /////////////////////////////////////////
         BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
@@ -198,12 +250,12 @@ public class Pedidos extends AppCompatActivity  {
         subtotal = (precio * cantidad);
         Toast.makeText(this, "El subtotal es $" + subtotal, Toast.LENGTH_SHORT).show();
 
-        SubTotalTxt.setText("$ " + subtotal);
+        //SubTotalTxt.setText("$ " + subtotal);
 
 
 
-        productoTxt.setText(producto);
-        CantidadExtraTxt.setText(CantidadTxt.getText());
+      //  productoTxt.setText(producto);
+      //  CantidadExtraTxt.setText(CantidadTxt.getText());
         bd.close();
         return subtotal;
     }
@@ -475,5 +527,10 @@ public class Pedidos extends AppCompatActivity  {
         //PrecioUnitarioTxt.setText(precio);
         Toast.makeText(Pedidos.this, "El precio leido es " +precio, Toast.LENGTH_SHORT).show();
         return precio;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //por ahora queda vacio
     }
 }

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="verdeAgua">#3fb57e</color>
+    <color name="verde">#009851</color>
+    <color name="azul">#3f7cb5</color>
+    <color name="amarillo">#ffee00</color>
     <color name="colorPrimaryDark">#050717</color>
     <color name="colorAccent">#ff4063</color>
     <color name="negro">#000000</color>
+    <color name="rojo">#fa0000</color>
     <color name="blanco">#ffffff</color>
 </resources>
