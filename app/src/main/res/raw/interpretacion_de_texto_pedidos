@@ -1,0 +1,14 @@
+*PEDIDOS* Lo que necesita recibir Jorge del Celular
+    -codPedido
+    -fecha
+    -hora
+    -codVendedor
+    -codZona
+    -codCliente
+    -codProducto
+    -cantidad
+    -precioUnitario
+    -subtotal
+    -porcentajeDesc
+    -importeDesc
+    -totalPedido

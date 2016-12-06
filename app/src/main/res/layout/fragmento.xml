@@ -25,6 +25,22 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/precioUnitarioExtraLbl"
+            android:text="Precio Unit.:"
+            android:layout_alignBottom="@+id/solicitadoSwitch"
+            android:layout_alignStart="@+id/ProductoLblExtra" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/precioUnitarioExtraTxt"
+            android:layout_alignBaseline="@+id/solicitadoSwitch"
+            android:layout_alignBottom="@+id/solicitadoSwitch"
+            android:layout_toEndOf="@+id/precioUnitarioExtraLbl" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Cantidad:"
             android:id="@+id/CantidadLblExtra"

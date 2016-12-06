@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">Pedidos_en_Sony</string>
+    <string name="app_name">La Autentica - Pedidos Movil</string>
     <string name="action_settings">Opciones</string>
     <string name="clientesdeldiaBtn">Clientes del dia</string>
+    <string name="rutasDelDiaBtn">Ruta del día</string>
     <string name="productosBtn">Productos</string>
     <string name="nvoPedidoBtn">Nuevo Pedido</string>
-    <string name="syncBtn">SYNC</string>
+    <string name="syncBtn">Actualizar Vendedor</string>
 
     <string name="activity_pedidos">Nuevo Pedido!</string>
     <string name="title_activity_activity_pedido2">activity_pedido2</string>
@@ -12,4 +13,18 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+
+
+    <string-array name="array_de_opciones_venta">
+        <item>VENTA</item>
+        <item>CAMBIO</item>
+        <item>PROMOCION</item>
+    </string-array>
+
+    <string name="title_activity_resumen">Resumen</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+
 </resources>

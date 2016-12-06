@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Producto:"
+            android:text="Productojqwejawej:"
             android:id="@+id/ProductoLblExtra"
             android:layout_marginTop="84dp"
             android:layout_alignParentTop="true"

@@ -9,4 +9,6 @@
     <color name="negro">#000000</color>
     <color name="rojo">#fa0000</color>
     <color name="blanco">#ffffff</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

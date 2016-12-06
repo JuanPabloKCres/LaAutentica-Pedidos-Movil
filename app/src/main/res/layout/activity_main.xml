@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.suiza.pedidos_en_sony.MainActivity">
+    tools:context="com.example.suiza.pedidos_en_sony.MainActivity"
+    android:background="#1d5a03"
+    android:backgroundTintMode="multiply">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -17,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:transitionName="@string/abc_searchview_description_search" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -25,41 +28,71 @@
    <include layout="@layout/content_main" />
     -->
 
-
-
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/clientesdeldiaBtn"
+        android:textSize="30dp"
         android:id="@+id/clientesBtn"
         android:layout_above="@+id/nvoPedidoFB"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="103dp" />
+        android:layout_marginBottom="103dp"
+        style="@style/Animation.AppCompat.DropDownUp"
+        android:allowUndo="false"
+        android:shadowColor="#000000" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/productosBtn"
+        android:textSize="30dp"
         android:id="@+id/productosBtn"
         android:layout_above="@+id/clientesBtn"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/clientesBtn"
+        android:layout_alignEnd="@+id/clientesBtn"
+        style="@style/Animation.AppCompat.DropDownUp"
+        android:allowUndo="false"
+        android:shadowColor="#000000" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nvoPedidoBtn"
+        android:textSize="30dp"
         android:id="@+id/nvoPedidoBtn"
         android:layout_above="@+id/productosBtn"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/productosBtn"
+        android:layout_alignEnd="@+id/productosBtn"
+        style="@style/Animation.AppCompat.DropDownUp"
+        android:allowUndo="false"
+        android:shadowColor="#000000" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/syncBtn"
+        android:textSize="30dp"
         android:id="@+id/sincronizarBtn"
         android:layout_above="@+id/nvoPedidoBtn"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/nvoPedidoBtn"
+        android:layout_alignEnd="@+id/nvoPedidoBtn"
+        style="@style/Animation.AppCompat.DropDownUp"
+        android:allowUndo="false"
+        android:shadowColor="#000000" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rutasDelDiaBtn"
+        android:textSize="30dp"
+        android:id="@+id/rutasDelDiaBtn"
+        android:layout_marginBottom="43dp"
+        android:layout_above="@+id/nvoPedidoFB"
+        android:layout_alignStart="@+id/clientesBtn"
+        android:layout_alignEnd="@+id/clientesBtn"
+        style="@style/Animation.AppCompat.DropDownUp"
+        android:allowUndo="false"
+        android:shadowColor="#000000" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/nvoPedidoFB"
@@ -69,7 +102,9 @@
         android:src="@android:drawable/ic_menu_add"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
-        android:layout_marginBottom="26dp"
+        android:layout_marginBottom="25dp"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/sincronizarBtn" />
+        android:layout_alignParentEnd="true" />
+
+
 </RelativeLayout>

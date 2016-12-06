@@ -40,12 +40,6 @@
                 android:theme="@style/AppTheme.AppBarOverlay"
                 android:id="@+id/view">
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay" />
             </android.support.design.widget.AppBarLayout>
 
 
@@ -57,41 +51,53 @@
                 android:layout_marginTop="20dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:textColor="#000000" />
 
             <Spinner
-                android:layout_width="200dp"
+                android:layout_width="259dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="-20dp"
                 android:id="@+id/ClienteSpinner"
-                android:layout_gravity="right"
-                android:layout_weight="0.13" />
+                android:layout_gravity="right" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Producto"
+                android:text="Producto:"
                 android:id="@+id/ProductoLbl"
-                android:layout_marginTop="20dp"
+                android:layout_gravity="top"
+                android:layout_marginTop="15dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_weight="0.32" />
 
             <Spinner
-                android:layout_width="199dp"
+                android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:id="@+id/ProductoSpinner"
+                android:entries="@style/spinnerItemStyle"
                 android:layout_marginTop="-20dp"
-                android:layout_gravity="right"
+                android:layout_gravity="top|right"
                 android:layout_below="@+id/ProductoLbl"
                 android:layout_alignRight="@+id/CantidadTxt"
                 android:layout_alignEnd="@+id/CantidadTxt" />
 
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_gravity="top|right"
+                android:id="@+id/CondicionVentaSpinner"
+                android:entries="@array/array_de_opciones_venta"
+                android:layout_marginTop="-20dp"
+                android:layout_below="@+id/ProductoSpinner" />
+
             <LinearLayout
                 android:id="@+id/layoutUno"
                 android:layout_width="match_parent"
-                android:layout_height="79dp"
+                android:layout_height="wrap_content"
                 android:paddingBottom="3dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
@@ -101,8 +107,7 @@
                 android:gravity="top"
                 android:orientation="horizontal"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_weight="1.08">
+                android:layout_alignParentLeft="true">
 
 
                 <TextView
@@ -110,9 +115,36 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:layout_marginTop="20dp"
-                    android:text="P/U:"
-                    android:id="@+id/PrecioUnitarioLbl" />
+                    android:layout_marginRight="10dp"
+                    android:text="Cantidad:"
+                    android:id="@+id/CantidadLbl"
+                    android:layout_alignLeft="@+id/CantidadTxt"
+                    android:layout_alignStart="@+id/CantidadTxt"
+                    android:layout_above="@+id/CantidadTxt"
+                    android:layout_alignTop="@+id/ProductoSpinner"
+                    android:textColor="#000000"
+                    android:layout_marginLeft="5dp" />
 
+
+                <EditText
+                    android:inputType="phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="2"
+                    android:id="@+id/CantidadFijoTxt"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="15dp"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_marginTop="20dp"
+                    android:text="P/U:   $"
+                    android:id="@+id/PrecioUnitarioLbl"
+                    android:textColor="#000000"
+                    android:layout_marginLeft="40dp" />
 
                 <EditText
                     android:inputType="phone"
@@ -121,53 +153,77 @@
                     android:ems="5"
                     android:id="@+id/PrecioUnitarioTxt"
                     android:layout_marginTop="15dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"/>
+
+                    android:textAlignment="center"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutDos">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:layout_marginTop="20dp"
-                    android:text="Cantidad:"
-                    android:id="@+id/CantidadLbl"
-                    android:layout_alignLeft="@+id/CantidadTxt"
-                    android:layout_alignStart="@+id/CantidadTxt"
-                    android:layout_above="@+id/CantidadTxt"
-                    android:layout_alignTop="@+id/ProductoSpinner" />
-
-
+                    android:text="Descuento(%):"
+                    android:id="@+id/DescuentoLbl"
+                    android:textColor="#000000"
+                    android:layout_marginLeft="5dp" />
                 <EditText
                     android:inputType="phone"
-                    android:layout_width="wrap_content"
+                    android:layout_width="51dp"
                     android:layout_height="wrap_content"
                     android:ems="5"
-                    android:id="@+id/CantidadFijoTxt"
+                    android:id="@+id/DescuentoProductoTxt"
                     android:layout_marginTop="15dp"
-                    android:layout_alignBottom="@+id/ProductoSpinner"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"/>
+                    android:layout_alignParentEnd="true"
+                    android:text="0"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_marginTop="20dp"
+                    android:text="PU c/ descuento:"
+                    android:id="@+id/TotalParcialLbl"
+                    android:layout_marginLeft="30dp" />
+                <EditText
+                    android:inputType="phone"
+                    android:layout_width="68dp"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:id="@+id/TotalParcialTxt"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:autoText="false"
+                    android:text="0"
+                    android:textAlignment="center" />
 
             </LinearLayout>
-
-
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_marginTop="20dp"
-                android:text="Total:"
+                android:layout_marginTop="22dp"
+                android:textSize="25dp"
+                android:text="Total Final:"
                 android:id="@+id/TotalLbl"
                 android:layout_alignLeft="@+id/TotalTxt"
                 android:layout_alignStart="@+id/TotalTxt"
                 android:layout_above="@+id/CantidadTxt"
                 android:layout_alignTop="@+id/ProductoSpinner" />
 
-
             <EditText
                 android:inputType="phone"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:ems="5"
                 android:textSize="35dp"
@@ -176,51 +232,60 @@
                 android:layout_marginTop="2dp"
                 android:layout_alignBottom="@+id/ProductoSpinner"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true"
+                android:text="0"
+                android:textAlignment="center" />
 
+            <!--
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/actualizarTotalFB"
+                android:layout_width="72dp"
+                android:layout_height="40dp"
+                android:src="@android:drawable/ic_menu_agenda"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.92"
+                android:background="#06731f" />
+                -->
 
             <!-- Layout de Bones de abajo -->
-         <RelativeLayout
-            android:id="@+id/layoutBotones"
-            android:layout_width="wrap_content"
-            android:layout_height="82dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:weightSum="3"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:gravity="top"
-            android:orientation="horizontal"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-             android:layout_weight="2.69">
 
-            <Button
-                android:id="@+id/ConfirmarPedidoBtn"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="Confirmar pedido"
-                android:textColor="@color/blanco"
-                android:background="@color/verdeAgua"
-                android:layout_weight="1.5"
-                android:layout_marginStart="40dp"
+            <LinearLayout
+                android:id="@+id/layoutBotones"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:weightSum="3"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="top"
+                android:orientation="horizontal"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true" />
+                android:layout_alignParentLeft="true"
+                android:layout_weight="23.14">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/agregarProductoFB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_add"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/fab_margin"
-                android:layout_weight="1.50"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
-         </RelativeLayout>
+                    <Button
+                        android:id="@+id/ConfirmarPedidoBtn"
+                        android:layout_width="150dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="5dp"
+                        android:text="Confirmar pedido"
+                        android:textColor="@color/blanco"
+                        android:background="@color/verdeAgua"
+                        android:layout_weight="0.43"
+                        android:layout_marginTop="30dp" />
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/agregarProductoFB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:layout_weight="3.5"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginLeft="110dp"
+                        android:layout_marginTop="30dp" />
+         </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/contenedor"

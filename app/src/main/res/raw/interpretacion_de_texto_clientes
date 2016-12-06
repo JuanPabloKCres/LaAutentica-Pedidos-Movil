@@ -6,5 +6,11 @@
                                             Nombre de Fantasia
                                             CUIT
                                             Direccion
-                                            Teléfono
-                                            Zona
+                                            Localidad
+                                            Teléfonos
+                                            Vendedor    (cod)
+                                            NombreVendedor
+                                            Zona    (cod)
+                                            NombreZona
+                                            Latitud
+                                            Longitud
