@@ -2,23 +2,24 @@ package com.example.suiza.pedidos_en_sony;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.os.CountDownTimer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.widget.ProgressBar;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
+
 public class Resumen extends AppCompatActivity {
-
-
-
 
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -183,4 +184,5 @@ public class Resumen extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
 }

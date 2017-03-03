@@ -87,6 +87,11 @@
                 android:layout_alignRight="@+id/CantidadTxt"
                 android:layout_alignEnd="@+id/CantidadTxt" />
 
+            <!-- SearchSpinner
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            -->
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
@@ -94,7 +99,8 @@
                 android:id="@+id/CondicionVentaSpinner"
                 android:entries="@array/array_de_opciones_venta"
                 android:layout_marginTop="-20dp"
-                android:layout_below="@+id/ProductoSpinner" />
+                android:layout_below="@+id/ProductoSpinner"
+                android:textAlignment="viewEnd" />
 
             <LinearLayout
                 android:id="@+id/layoutUno"

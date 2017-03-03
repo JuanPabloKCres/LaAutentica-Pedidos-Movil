@@ -66,8 +66,8 @@
             android:layout_gravity="center_horizontal|top"
             android:indeterminate="false"
             android:max="5"
-            android:progress="0"
-            android:indeterminateDuration="100" />
+            android:progress="5"
+            android:indeterminateDuration="50" />
     </FrameLayout>
 
 </FrameLayout>

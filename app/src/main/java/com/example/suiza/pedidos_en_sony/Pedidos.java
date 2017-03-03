@@ -221,7 +221,7 @@ public class
                 CondicionVentaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(Pedidos.this, "Se selecciono: " + CondicionVentaSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Pedidos.this, "Se selecciono: " + CondicionVentaSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
                         if (CondicionVentaSpinner.getSelectedItem().toString().equals("PROMOCION")) {
                             DescuentoProductoTxt.setText("100");
                         } else if (CondicionVentaSpinner.getSelectedItem().toString().equals("CAMBIO")) {
@@ -390,7 +390,7 @@ public class
                 if (v.getId() == R.id.agregarProductoFB) {
                     if (CantidadTxt.getText().toString().trim().length() != 0){        // si el largo del string cantidad es mayor a cero (no es null)
                         if (Integer.parseInt(CantidadTxt.getText().toString()) > 0) {       // y si la cantidad es mayor a 0
-                          if(validarCantidadIngresada() == true){         /** Validar que sea mayor a la cantidad minima, si es mayor devuelve true */
+                          if((validarCantidadIngresada() == true) || (cantidad_minima_de_venta<2)){         /** Validar que sea mayor a la cantidad minima, si es mayor devuelve true */
                             if (0 <= Integer.parseInt(DescuentoProductoTxt.getText().toString()) && (Integer.parseInt(DescuentoProductoTxt.getText().toString())<= 100)){
                                 contadorDePulsaciones++;
                                 Snackbar.make(v, "Se añadio un Articulo al pedido, (" + (contadorDePulsaciones - 1) + ")", Snackbar.LENGTH_LONG)
@@ -567,7 +567,7 @@ public class
                                     total = total + subtotalConDescuentoIncluido;
                                     total = redondear(total, 3);
                                 }
-
+                                
                                 /** SWITCH para dar de baja un articulo ****/
                                 SolicitadoSwitch.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -681,6 +681,12 @@ public class
                         admin.crearPedidosPendientes(bd);
                         /*******************************************************************************/
 
+                        try {
+                            // Simulate network access.
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+
+                        }
                         Intent intent = new Intent(Pedidos.this, Resumen.class);
                         startActivity(intent);
                     }
@@ -1296,21 +1302,23 @@ public class
                     return false;
             }
 
-        public boolean validarCantidadIngresada(){
-            if ((Integer.parseInt(CantidadTxt.getText().toString()) > 1)){
-                if(esMultiplo(Integer.parseInt(CantidadTxt.getText().toString()),cantidad_minima_de_venta)){
-                    Toast.makeText(getApplicationContext(), "La cantidad se permite!", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Solo se venden multiplos de "+cantidad_minima_de_venta, Toast.LENGTH_SHORT).show();
+        public boolean validarCantidadIngresada() {
+            if (cantidad_minima_de_venta > 1) {
+                if ((Integer.parseInt(CantidadTxt.getText().toString()) > 1)) {
+                    if (esMultiplo(Integer.parseInt(CantidadTxt.getText().toString()), cantidad_minima_de_venta)) {
+                        Toast.makeText(getApplicationContext(), "La cantidad se permite!", Toast.LENGTH_SHORT).show();
+                        return true;
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Solo se venden multiplos de " + cantidad_minima_de_venta, Toast.LENGTH_SHORT).show();
+                        CantidadTxt.setText("");
+                        return false;
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Solo se venden multiplos de " + cantidad_minima_de_venta, Toast.LENGTH_SHORT).show();
                     CantidadTxt.setText("");
                     return false;
                 }
-            }
-            else{
-                Toast.makeText(getApplicationContext(), "Solo se venden multiplos de "+cantidad_minima_de_venta, Toast.LENGTH_SHORT).show();
-                CantidadTxt.setText("");
+            }else{
                 return false;
             }
         }
