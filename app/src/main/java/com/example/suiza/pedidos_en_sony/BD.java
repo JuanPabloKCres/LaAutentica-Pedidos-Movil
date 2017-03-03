@@ -27,20 +27,16 @@ public class BD extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE NumeroPedido(id INTEGER PRIMARY KEY, numero INTEGER DEFAULT 1)");                                //numero de pedido actual
         db.execSQL("CREATE TABLE Clientes(id INTEGER PRIMARY KEY, cod_Cliente TEXT, razonSocial TEXT, nombreFantasia TEXT, cuit TEXT, cod_Vendedor TEXT, vendedor TEXT, direccion TEXT, localidad TEXT, telefono TEXT, cod_zona TEXT, zona TEXT, latitud TEXT, longitud TEXT)");
-        db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY, cod_Producto TEXT, nombre TEXT, precio INTEGER)");
+        db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY, cod_Producto TEXT, nombre TEXT, precio TEXT, cantidadMinimaVenta INTEGER)");
         db.execSQL("CREATE TABLE Vendedores(id INTEGER PRIMARY KEY, cod_vendedor TEXT, nombre TEXT, user TEXT, password TEXT)");    //es el que toma los pedidos
 
         db.execSQL("INSERT INTO NumeroPedido (id, numero) Values(1,1)");
         db.execSQL("CREATE TABLE Pedidos(id INTEGER PRIMARY KEY, cod_Pedido TEXT, cod_Cliente TEXT, total INTEGER, fecha TEXT, hora TEXT, cod_Vendedor TEXT, cod_zona TEXT)");
-        db.execSQL("CREATE TABLE pedidos_auxiliar(id INTEGER PRIMARY KEY, cod_Pedido TEXT, cod_Cliente TEXT,  , total INTEGER, fecha TEXT, hora TEXT, cod_Vendedor TEXT, cod_zona TEXT)");
-        /*
-        db.execSQL("CREATE TABLE Pedidos(id INTEGER PRIMARY KEY, id_cliente INTEGER, FOREIGN KEY(id_cliente) REFERENCES Clientes(id)," +
-                " id_vendedor INTEGER, FOREIGN KEY (id_vendedor) REFERENCES Vendedor(id), cantidadTotal INTEGER, precioTotal INTEGER)");
 
-
-        db.execSQL("CREATE TABLE Producto_Pedido(id INTEGER PRIMARY KEY, id_producto INTEGER, FOREIGN KEY(id_producto) REFERENCES Productos(id)," +
-                        " id_pedido INTEGER, FOREIGN KEY (id_pedido) REFERENCES Pedidos(id), cantidad INTEGER, subtotal INTEGER)");
-                        */
+        db.execSQL("CREATE TABLE pedidos_pendientes (id INTEGER PRIMARY KEY, cod_pedido TEXT, cod_cliente TEXT, fecha TEXT, hora TEXT," +
+                "cod_Vendedor TEXT, cod_zona TEXT,"+
+                "cod_producto TEXT, cantidad TEXT, precio_unitario TEXT, porcentaje_descuento TEXT, importe_descuento_unidad TEXT, precio_unitarioCdescuento TEXT," +
+                "subtotal TEXT, latitud TEXT, longitud TEXT, condicion TEXT)");
     }
 
     @Override
@@ -61,6 +57,10 @@ public class BD extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS Productos");
     }
 
+    public void dropearPedidosPendientes(SQLiteDatabase db){
+        db.execSQL("DROP TABLE IF EXISTS pedidos_pendientes");
+    }
+
     public void dropearVendedores(SQLiteDatabase db){
         db.execSQL("DROP TABLE IF EXISTS Vendedores");
     }
@@ -70,7 +70,21 @@ public class BD extends SQLiteOpenHelper {
 
     public void crearCLIENTESyPRODUCTOS(SQLiteDatabase db){
         db.execSQL("CREATE TABLE Clientes(id INTEGER PRIMARY KEY, cod_Cliente TEXT, razonSocial TEXT, nombreFantasia TEXT, cuit TEXT, cod_Vendedor TEXT, vendedor TEXT, direccion TEXT, localidad TEXT, telefono TEXT, cod_zona TEXT, zona TEXT, latitud TEXT, longitud TEXT)");
-        db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY, cod_Producto TEXT, nombre TEXT, precio INTEGER)");
+        db.execSQL("CREATE TABLE Productos(id INTEGER PRIMARY KEY, cod_Producto TEXT, nombre TEXT, precio INTEGER, cantidadMinimaVenta INTEGER)");
+    }
+
+    public void crearClientes(SQLiteDatabase db){
+        db.execSQL("CREATE TABLE Clientes(id INTEGER PRIMARY KEY, cod_Cliente TEXT, razonSocial TEXT, nombreFantasia TEXT, cuit TEXT, cod_Vendedor TEXT, vendedor TEXT, direccion TEXT, localidad TEXT, telefono TEXT, cod_zona TEXT, zona TEXT, latitud TEXT, longitud TEXT)");
+    }
+    public void drpoearClientes(SQLiteDatabase db){
+        db.execSQL("DROP TABLE IF EXISTS Clientes");
+    }
+
+    public void crearPedidosPendientes(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE pedidos_pendientes (id INTEGER PRIMARY KEY, cod_pedido TEXT, cod_cliente TEXT, fecha TEXT, hora TEXT," +
+                "cod_Vendedor TEXT, cod_zona TEXT," +
+                "cod_producto TEXT, cantidad TEXT, precio_unitario TEXT, porcentaje_descuento TEXT, importe_descuento_unidad TEXT, precio_unitarioCdescuento TEXT," +
+                "subtotal TEXT, latitud TEXT, longitud TEXT, condicion TEXT)");
     }
 
     public void onDelete(SQLiteDatabase db){

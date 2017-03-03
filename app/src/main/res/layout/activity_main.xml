@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.example.suiza.pedidos_en_sony.MainActivity"
-    android:background="#1d5a03"
+    android:background="#61aa42"
     android:backgroundTintMode="multiply">
 
     <android.support.design.widget.AppBarLayout
@@ -39,7 +39,10 @@
         android:layout_marginBottom="103dp"
         style="@style/Animation.AppCompat.DropDownUp"
         android:allowUndo="false"
-        android:shadowColor="#000000" />
+        android:shadowColor="#000000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.TextView.SpinnerItem"
+        android:textColorHint="#ffffff"
+        android:textColorHighlight="#ed7316" />
 
     <Button
         android:layout_width="wrap_content"
@@ -52,7 +55,10 @@
         android:layout_alignEnd="@+id/clientesBtn"
         style="@style/Animation.AppCompat.DropDownUp"
         android:allowUndo="false"
-        android:shadowColor="#000000" />
+        android:shadowColor="#000000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.TextView.SpinnerItem"
+        android:textColorHint="#ffffff"
+        android:textColorHighlight="#ed7316" />
 
     <Button
         android:layout_width="wrap_content"
@@ -65,7 +71,10 @@
         android:layout_alignEnd="@+id/productosBtn"
         style="@style/Animation.AppCompat.DropDownUp"
         android:allowUndo="false"
-        android:shadowColor="#000000" />
+        android:shadowColor="#000000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.TextView.SpinnerItem"
+        android:textColorHint="#ffffff"
+        android:textColorHighlight="#ed7316" />
 
     <Button
         android:layout_width="wrap_content"
@@ -78,7 +87,10 @@
         android:layout_alignEnd="@+id/nvoPedidoBtn"
         style="@style/Animation.AppCompat.DropDownUp"
         android:allowUndo="false"
-        android:shadowColor="#000000" />
+        android:shadowColor="#000000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.TextView.SpinnerItem"
+        android:textColorHint="#ffffff"
+        android:textColorHighlight="#ed7316" />
 
     <Button
         android:layout_width="wrap_content"
@@ -92,7 +104,11 @@
         android:layout_alignEnd="@+id/clientesBtn"
         style="@style/Animation.AppCompat.DropDownUp"
         android:allowUndo="false"
-        android:shadowColor="#000000" />
+        android:shadowColor="#000000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.TextView.SpinnerItem"
+        android:textColorHint="#ffffff"
+        android:textColorHighlight="#ed7316"
+        android:enabled="false" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/nvoPedidoFB"

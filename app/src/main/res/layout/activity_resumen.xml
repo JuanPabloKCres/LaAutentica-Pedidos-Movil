@@ -24,7 +24,10 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:background="#31c65e"
+        android:textAlignment="center"
+        style="@style/Base.Animation.AppCompat.Dialog">
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
@@ -36,15 +39,35 @@
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 
-            <Button
-                android:id="@+id/dummy_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
-
         </LinearLayout>
+
+        <ImageView
+            android:layout_width="164dp"
+            android:layout_height="164dp"
+            android:id="@+id/imageView"
+            android:layout_gravity="center"
+            android:src="@drawable/abc_btn_check_to_on_mtrl_015" />
+
+        <TextView
+            android:layout_width="279dp"
+            android:layout_height="70dp"
+            android:text="El pedido se almaceno satisfactoriamente!"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal|bottom"
+            android:textSize="15dp"
+            android:textAlignment="center"
+            style="@style/AppTheme" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center_horizontal|top"
+            android:indeterminate="false"
+            android:max="5"
+            android:progress="0"
+            android:indeterminateDuration="100" />
     </FrameLayout>
 
 </FrameLayout>

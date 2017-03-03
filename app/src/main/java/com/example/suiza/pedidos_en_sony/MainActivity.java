@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         nvoPedidoBtn = (Button) findViewById(R.id.nvoPedidoBtn);
         sincronizarBtn = (Button) findViewById(R.id.sincronizarBtn);
         rutaDelDiaBtn = (Button) findViewById(R.id.rutasDelDiaBtn);
+        clientesBtn = (Button) findViewById(R.id.clientesBtn);
+        productosBtn = (Button) findViewById(R.id.productosBtn);
         /********************************************************************/
 
       /* Redireccion al pulsar los botones */
@@ -89,12 +91,34 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        clientesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Vera un listado de los clientes a visitar hoy", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                //Intent intent = new Intent(MainActivity.this, ClientesDia.class);
+                //startActivity(intent);
+            }
+        });
+
+        productosBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Vera un listado de los productos disponibles para preventa hoy", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                //Intent intent = new Intent(MainActivity.this, ProductosDia.class);
+                //startActivity(intent);
+            }
+        });
+
         findViewById(R.id.nvoPedidoBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, Pedidos.class));
             }
         });
+
 
     }
 
