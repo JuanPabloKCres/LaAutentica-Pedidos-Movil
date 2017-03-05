@@ -87,11 +87,12 @@
                 android:layout_alignRight="@+id/CantidadTxt"
                 android:layout_alignEnd="@+id/CantidadTxt" />
 
-            <!-- SearchSpinner
+            <!--SearchSpinner
+            -->
             <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            -->
+                android:layout_height="wrap_content"
+                />
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="55dp"

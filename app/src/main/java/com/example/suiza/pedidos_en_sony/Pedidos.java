@@ -1,5 +1,6 @@
 package com.example.suiza.pedidos_en_sony;
 
+
 import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -113,7 +114,7 @@ public class
         LayoutContenedor.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getApplication(), "Se esta presionando el layout extra!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "Se esta presionando el layout extra", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -156,10 +157,11 @@ public class
             }
         });*/
 
+        /** SEARCH-SPINNER*/
+
+        /** */
         PrecioUnitarioTxt = (EditText) findViewById(R.id.PrecioUnitarioTxt);
         PrecioUnitarioTxt.setKeyListener(null);
-        //SubtotalTxt = (EditText)findViewById(R.id.SubtotalTxt);
-
         DescuentoProductoTxt = (EditText) findViewById(R.id.DescuentoProductoTxt);
         DescuentoProductoTxt.setFilters(new InputFilter[]{new InputFilterMinMax("0","100")});
         DescuentoProductoTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -224,10 +226,13 @@ public class
                         //Toast.makeText(Pedidos.this, "Se selecciono: " + CondicionVentaSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
                         if (CondicionVentaSpinner.getSelectedItem().toString().equals("PROMOCION")) {
                             DescuentoProductoTxt.setText("100");
+                            DescuentoProductoTxt.setEnabled(false);
                         } else if (CondicionVentaSpinner.getSelectedItem().toString().equals("CAMBIO")) {
                             DescuentoProductoTxt.setText("100");
+                            DescuentoProductoTxt.setEnabled(false);
                         } else if (CondicionVentaSpinner.getSelectedItem().toString().equals("VENTA")) {
                             DescuentoProductoTxt.setText("0");
+                            DescuentoProductoTxt.setEnabled(true);
                         }
                     }
 
@@ -239,12 +244,24 @@ public class
                 ConfirmarPedidoBtn.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Toast.makeText(getApplicationContext(), "Se presiono el botonito", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Marcia Cussatti - Luis Flores", Toast.LENGTH_SHORT).show();
                         return false;
                     }
                 });
 
                 /************************************************************************************/
+                ClienteSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        String cliente = ClienteSpinner.getSelectedItem().toString();
+                        String direccion = direccionDelClienteElegido(cliente);
+                        Toast.makeText(getApplicationContext(), "Direccion del cliente: "+direccion, Toast.LENGTH_LONG).show();
+
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
 
                 ProductoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -259,13 +276,10 @@ public class
                             Toast.makeText(getApplicationContext(), "Solo se venden multiplos de "+cantidad_minima_de_venta, Toast.LENGTH_LONG).show();
                         }
                     }
-
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
-
                     }
                 });
-
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
                 /********* Ni bien se abre el activity, sincroniza BD desde TXT *****************/
@@ -304,25 +318,15 @@ public class
                 double totalParcial = Double.parseDouble(String.valueOf(TotalParcialTxt.getText()));
                 double descuento = Double.parseDouble(String.valueOf(DescuentoProductoTxt.getText()));
                 double totalFinal = Double.parseDouble(String.valueOf(TotalTxt.getText()));
-
                 int i = 0;
                 if (f.exists()) {
                     try {
                         Toast.makeText(this, "El archivo de pedido del dia ya existia, se agrego un nuevo articulo.", Toast.LENGTH_SHORT).show();
                         FileWriter fileWritter = new FileWriter(f.getAbsoluteFile(), true);
                         BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-
                         ////////Sacado de StackOverflow (Componentes Visuales Dinamicos referenciados desde una lista)
                         String[] strings = new String[todosLosEditText.size()];
-                        //for (int pedido = 1; pedido < contadorDePulsaciones; pedido++) {
                         strings[i] = todosLosEditText.get(i).getText().toString();
-                        // i=0 "producto"
-                        // i=1 "cantidad"
-                        // i=2 "subtotal"
-                        // i=3 "precioUnitario"
-                        // i=4 "subtotalConDescuento"
-                        // i=5 "%DescuentoProducto"
-
                         List<String> ListaPedidos;
                         ListaPedidos = cargarLineaPedidosConfirmados();
                         for (int pedidoFila = 0; pedidoFila < ListaPedidos.size(); pedidoFila++) {
@@ -360,24 +364,6 @@ public class
                 }
             }
 
-/*
-    public void grabarEnTXTmemoriaInterna(){
-        try
-        {
-            OutputStreamWriter fout= new OutputStreamWriter(openFileOutput("pedidosMemoriaInterna.txt", Context.MODE_PRIVATE));
-            fout.write("Texto de esta tarde.");
-            fout.flush();
-            fout.close();
-            Toast.makeText(this, "Se ha escrito en memoria interna", Toast.LENGTH_SHORT).show();
-        }
-        catch (Exception ex)
-        {
-            Log.e("Ficheros", "Error al escribir fichero a memoria interna");
-            Toast.makeText(this, "Error al escribir el fichero en memoria interna", Toast.LENGTH_SHORT).show();
-        }
-    }
-*/
-
             @Override
             public boolean onOptionsItemSelected(MenuItem item) {
                 int id = item.getItemId();
@@ -390,242 +376,240 @@ public class
                 if (v.getId() == R.id.agregarProductoFB) {
                     if (CantidadTxt.getText().toString().trim().length() != 0){        // si el largo del string cantidad es mayor a cero (no es null)
                         if (Integer.parseInt(CantidadTxt.getText().toString()) > 0) {       // y si la cantidad es mayor a 0
-                          if((validarCantidadIngresada() == true) || (cantidad_minima_de_venta<2)){         /** Validar que sea mayor a la cantidad minima, si es mayor devuelve true */
-                            if (0 <= Integer.parseInt(DescuentoProductoTxt.getText().toString()) && (Integer.parseInt(DescuentoProductoTxt.getText().toString())<= 100)){
-                                contadorDePulsaciones++;
-                                Snackbar.make(v, "Se añadio un Articulo al pedido, (" + (contadorDePulsaciones - 1) + ")", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
-                                /****** INICIO inflarLayout programaticamente ******/
-                                final TextView productoExtraLbl;
-                                final TextView CantidadExtraLbl;
-                                final TextView SubtotalExtraLbl;
-                                final TextView SubtotaCDescuentolLbl;
-                                final TextView PrecioUnitLbl;
-                                final TextView DescuentoExtraLbl;
-                                final EditText productoTxtDinamico;
-                                final EditText CantidadExtraTxt;
-                                final EditText SubtotalExtraTxt;
-                                final EditText SubTotalCDescuentoExtraTxt;
-                                final EditText PrecioUnitTxt;
-                                final EditText DescuentoExtraTxt;
+                            if (Double.parseDouble(PrecioUnitarioTxt.getText().toString()) > 0) {
+                                if ((validarCantidadIngresada() == true) || (cantidad_minima_de_venta < 2)) {         /** Validar que sea mayor a la cantidad minima, si es mayor devuelve true */
+                                    if (0 <= Integer.parseInt(DescuentoProductoTxt.getText().toString()) && (Integer.parseInt(DescuentoProductoTxt.getText().toString()) <= 100)) {
+                                        contadorDePulsaciones++;
+                                        Snackbar.make(v, "Se añadio un Articulo al pedido, (" + (contadorDePulsaciones - 1) + ")", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                        /****** INICIO inflarLayout programaticamente ******/
+                                        final TextView productoExtraLbl;
+                                        final TextView CantidadExtraLbl;
+                                        final TextView SubtotalExtraLbl;
+                                        final TextView SubtotaCDescuentolLbl;
+                                        final TextView PrecioUnitLbl;
+                                        final TextView DescuentoExtraLbl;
+                                        final EditText productoTxtDinamico;
+                                        final EditText CantidadExtraTxt;
+                                        final EditText SubtotalExtraTxt;
+                                        final EditText SubTotalCDescuentoExtraTxt;
+                                        final EditText PrecioUnitTxt;
+                                        final EditText DescuentoExtraTxt;
 
-                                final Switch SolicitadoSwitch;
+                                        final Switch SolicitadoSwitch;
 
-                                productoExtraLbl = new TextView(Pedidos.this);
-                                PrecioUnitLbl = new TextView(Pedidos.this);
-                                CantidadExtraLbl = new TextView(Pedidos.this);
-                                SubtotalExtraLbl = new TextView(Pedidos.this);
-                                SubtotaCDescuentolLbl = new TextView(Pedidos.this);
-                                DescuentoExtraLbl = new TextView(Pedidos.this);
+                                        productoExtraLbl = new TextView(Pedidos.this);
+                                        PrecioUnitLbl = new TextView(Pedidos.this);
+                                        CantidadExtraLbl = new TextView(Pedidos.this);
+                                        SubtotalExtraLbl = new TextView(Pedidos.this);
+                                        SubtotaCDescuentolLbl = new TextView(Pedidos.this);
+                                        DescuentoExtraLbl = new TextView(Pedidos.this);
 
-                                productoTxtDinamico = new EditText(Pedidos.this);
-                                productoTxtDinamico.setKeyListener(null);
-                                productoTxtDinamico.setTextSize(12);
-                                CantidadExtraTxt = new EditText(Pedidos.this);
-                                CantidadExtraTxt.setKeyListener(null);
-                                CantidadExtraTxt.setTextSize(15);
-                                CantidadExtraTxt.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                                        productoTxtDinamico = new EditText(Pedidos.this);
+                                        productoTxtDinamico.setKeyListener(null);
+                                        productoTxtDinamico.setTextSize(12);
+                                        CantidadExtraTxt = new EditText(Pedidos.this);
+                                        CantidadExtraTxt.setKeyListener(null);
+                                        CantidadExtraTxt.setTextSize(15);
+                                        CantidadExtraTxt.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
 
-                                SubtotalExtraTxt = new EditText(Pedidos.this);
-                                SubtotalExtraTxt.setKeyListener(null);
+                                        SubtotalExtraTxt = new EditText(Pedidos.this);
+                                        SubtotalExtraTxt.setKeyListener(null);
 
-                                SubTotalCDescuentoExtraTxt = new EditText(Pedidos.this);
-                                SubTotalCDescuentoExtraTxt.setKeyListener(null);
+                                        SubTotalCDescuentoExtraTxt = new EditText(Pedidos.this);
+                                        SubTotalCDescuentoExtraTxt.setKeyListener(null);
 
-                                PrecioUnitTxt = new EditText(Pedidos.this);
-                                PrecioUnitTxt.setTextSize(15);
-                                PrecioUnitTxt.setKeyListener(null);
+                                        PrecioUnitTxt = new EditText(Pedidos.this);
+                                        PrecioUnitTxt.setTextSize(15);
+                                        PrecioUnitTxt.setKeyListener(null);
 
-                                DescuentoExtraTxt = new EditText(Pedidos.this);
-                                DescuentoExtraTxt.setKeyListener(null);
+                                        DescuentoExtraTxt = new EditText(Pedidos.this);
+                                        DescuentoExtraTxt.setKeyListener(null);
 
-                                SolicitadoSwitch = new Switch(Pedidos.this);        //Switch para desactivar un producto del pedido
+                                        SolicitadoSwitch = new Switch(Pedidos.this);        //Switch para desactivar un producto del pedido
 
-                                //el "id" de cada componente sera igual para identificar el pedido al que corresponde
-                                int id = contadorDePulsaciones;
-                                //fijamos los id de los componentes dinamicos
-                                SolicitadoSwitch.setId(id);
-                                SolicitadoSwitch.setChecked(true);
-                                SolicitadoSwitch.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                productoExtraLbl.setId(id);
-                                productoExtraLbl.setText("Producto " + (id - 1) + ":");
-                                productoExtraLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                PrecioUnitLbl.setId(id);
-                                PrecioUnitLbl.setText("Precio Unitario: ($)");
-                                PrecioUnitLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                CantidadExtraLbl.setId(id);
-                                CantidadExtraLbl.setText("Cantidad:");
-                                CantidadExtraLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                SubtotalExtraLbl.setId(id);
-                                SubtotalExtraLbl.setText("Subtotal:");
-                                SubtotalExtraLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                DescuentoExtraLbl.setId(id);
-                                DescuentoExtraLbl.setText("Descuento a arti (%):");
-                                DescuentoExtraLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                SubtotaCDescuentolLbl.setId(id);
-                                SubtotaCDescuentolLbl.setText("Subtotal c/ el descuento: $");
-                                SubtotaCDescuentolLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                productoTxtDinamico.setId(id);
-                                productoTxtDinamico.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                PrecioUnitTxt.setId(id);
-                                PrecioUnitTxt.setText(PrecioUnitarioTxt.getText());
-                                PrecioUnitTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                CantidadExtraTxt.setId(id);
-                                CantidadExtraTxt.setText(CantidadTxt.getText());
-                                CantidadExtraTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                SubtotalExtraTxt.setId(id);
-                                SubtotalExtraTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                DescuentoExtraTxt.setId(id);
-                                DescuentoExtraTxt.setText(DescuentoProductoTxt.getText().toString());   //mete en el Descuento ET de un producto el Descuento de cuando se agrego.
-                                DescuentoExtraTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                                //
-                                SubTotalCDescuentoExtraTxt.setId(id);
-                                SubTotalCDescuentoExtraTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //el "id" de cada componente sera igual para identificar el pedido al que corresponde
+                                        int id = contadorDePulsaciones;
+                                        //fijamos los id de los componentes dinamicos
+                                        SolicitadoSwitch.setId(id);
+                                        SolicitadoSwitch.setChecked(true);
+                                        SolicitadoSwitch.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        productoExtraLbl.setId(id);
+                                        productoExtraLbl.setText("Producto: ");
+                                        productoExtraLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        PrecioUnitLbl.setId(id);
+                                        PrecioUnitLbl.setText("Precio Unitario: $");
+                                        PrecioUnitLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        CantidadExtraLbl.setId(id);
+                                        CantidadExtraLbl.setText("Cantidad:");
+                                        CantidadExtraLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        SubtotalExtraLbl.setId(id);
+                                        SubtotalExtraLbl.setText("Subtotal:");
+                                        SubtotalExtraLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        DescuentoExtraLbl.setId(id);
+                                        DescuentoExtraLbl.setText("Descuento a arti (%):");
+                                        DescuentoExtraLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        SubtotaCDescuentolLbl.setId(id);
+                                        SubtotaCDescuentolLbl.setText("Subtotal c/ el descuento: $");
+                                        SubtotaCDescuentolLbl.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        productoTxtDinamico.setId(id);
+                                        productoTxtDinamico.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        PrecioUnitTxt.setId(id);
+                                        PrecioUnitTxt.setText(PrecioUnitarioTxt.getText());
+                                        PrecioUnitTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        CantidadExtraTxt.setId(id);
+                                        CantidadExtraTxt.setText(CantidadTxt.getText());
+                                        CantidadExtraTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        SubtotalExtraTxt.setId(id);
+                                        SubtotalExtraTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        DescuentoExtraTxt.setId(id);
+                                        DescuentoExtraTxt.setText(DescuentoProductoTxt.getText().toString());   //mete en el Descuento ET de un producto el Descuento de cuando se agrego.
+                                        DescuentoExtraTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        //
+                                        SubTotalCDescuentoExtraTxt.setId(id);
+                                        SubTotalCDescuentoExtraTxt.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                                //guardamos los componentes en una lista para accederlos despues
-                                //EditText's
-                                todosLosEditText.add(productoTxtDinamico);  //posicion 0
-                                todosLosEditText.add(CantidadExtraTxt);     //posicion 1
-                                todosLosEditText.add(SubtotalExtraTxt);     //posicion 2
-                                todosLosEditText.add(PrecioUnitTxt);        //posicion 3
-                                //Nota: mas abajo tambien hacemos un add de SubtotalExtra
-                                todosLosEditText.add(DescuentoExtraTxt);            //new!
+                                        //guardamos los componentes en una lista para accederlos despues
+                                        //EditText's
+                                        todosLosEditText.add(productoTxtDinamico);  //posicion 0
+                                        todosLosEditText.add(CantidadExtraTxt);     //posicion 1
+                                        todosLosEditText.add(SubtotalExtraTxt);     //posicion 2
+                                        todosLosEditText.add(PrecioUnitTxt);        //posicion 3
+                                        //Nota: mas abajo tambien hacemos un add de SubtotalExtra
+                                        todosLosEditText.add(DescuentoExtraTxt);            //new!
 
-                                //Switch's
-                                todosLosSwitch.add(SolicitadoSwitch);
+                                        //Switch's
+                                        todosLosSwitch.add(SolicitadoSwitch);
 
-                                //instancio los componentes, para que aparezcan en la vista
-                                LayoutContenedor.addView(SolicitadoSwitch);
-                                LayoutContenedor.addView(productoExtraLbl);
-                                LayoutContenedor.addView(PrecioUnitLbl);
-                                LayoutContenedor.addView(productoTxtDinamico);
-                                LayoutContenedor.addView(PrecioUnitTxt);
-                                LayoutContenedor.addView(CantidadExtraLbl);
-                                LayoutContenedor.addView(CantidadExtraTxt);
-                                LayoutContenedor.addView(SubtotalExtraLbl);
-                                LayoutContenedor.addView(SubtotalExtraTxt);
-                                LayoutContenedor.addView(SubtotaCDescuentolLbl);    //new!
-                                LayoutContenedor.addView(SubTotalCDescuentoExtraTxt);   //new!
-                                LayoutContenedor.addView(DescuentoExtraLbl);            //new!
-                                LayoutContenedor.addView(DescuentoExtraTxt);            //new!
-                                //FIN generacion dinamica de vista "Detalle Pedido"
+                                        //instancio los componentes, para que aparezcan en la vista
+                                        LayoutContenedor.addView(SolicitadoSwitch);
+                                        LayoutContenedor.addView(productoExtraLbl);
+                                        LayoutContenedor.addView(productoTxtDinamico);
+                                        LayoutContenedor.addView(PrecioUnitLbl);
+                                        LayoutContenedor.addView(PrecioUnitTxt);
+                                        LayoutContenedor.addView(CantidadExtraLbl);
+                                        LayoutContenedor.addView(CantidadExtraTxt);
+                                        LayoutContenedor.addView(SubtotalExtraLbl);
+                                        LayoutContenedor.addView(SubtotalExtraTxt);
+                                        LayoutContenedor.addView(SubtotaCDescuentolLbl);    //new!
+                                        LayoutContenedor.addView(SubTotalCDescuentoExtraTxt);   //new!
+                                        LayoutContenedor.addView(DescuentoExtraLbl);            //new!
+                                        LayoutContenedor.addView(DescuentoExtraTxt);            //new!
+                                        //FIN generacion dinamica de vista "Detalle Pedido"
 
-                                ////////////////////////////////////// parte de calcSubtotal /////////////////////////////////////////
-                                BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-                                final SQLiteDatabase bd = admin.getWritableDatabase();
-                                String producto;
-                                int cantidad = 0;
-                                double precio = 0, subtotal = 0, subtotalConDescuentoIncluido = 0;
+                                        ////////////////////////////////////// parte de calcSubtotal /////////////////////////////////////////
+                                        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
+                                        final SQLiteDatabase bd = admin.getWritableDatabase();
+                                        String producto;
+                                        int cantidad = 0;
+                                        double precio = 0, subtotal = 0, subtotalConDescuentoIncluido = 0;
 
-                                if (CantidadTxt.getText() == null) {
-                                    CantidadTxt.setText("0");
-                                    cantidad = 0;
-                                } else {
-                                    cantidad = Integer.parseInt(CantidadTxt.getText().toString());      //forzar al EditText a convertir a entero la cantidad
-                                }
-
-                                producto = ProductoSpinner.getSelectedItem().toString();            //conseguimos lo que esta seleccionado en el ProductoSpinner
-
-                                Cursor fila = bd.rawQuery("SELECT * FROM Productos WHERE nombre= '" + producto + "'", null);
-                                if (fila.moveToFirst()) {
-                                    precio = Double.parseDouble(fila.getString(3));
-                                    precio = redondear(precio, 3);
-                                    //Toast.makeText(this, "El precio del producto es $" + precio, Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(this, "Ocurrio un error al calcular el subtotal :(", Toast.LENGTH_SHORT).show();
-                                }
-
-                                subtotal = (precio * cantidad);
-                                subtotal = redondear(subtotal, 3);
-                                SubtotalExtraTxt.setText("" + subtotal);
-                                todosLosEditText.add(SubTotalCDescuentoExtraTxt);   //new!
-                                productoTxtDinamico.setText(producto);
-                                bd.close();
-
-                                //ArrayAdapter<String> AdaptadorProductoSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ListaProductos);
-                                // la magia de calcular el total final considerando el % de descuento y el total parcial
-                                double descuento = Double.parseDouble(String.valueOf(DescuentoProductoTxt.getText()));
-                                descuento = redondear(descuento, 3);
-                                //Log.(Double.parseDouble(String.valueOf(TotalParcialTxt.getText())));
-                                double totalParcial = Double.parseDouble(TotalParcialTxt.getText().toString());
-                                double ahorroTotal, ahorroXproducto;
-                                double totalFinal = totalParcial;
-
-                                if (descuento >= 0 && descuento <= 100) {
-                                    ahorroXproducto = (descuento / 100) * subtotal;
-                                    ahorroXproducto = redondear(ahorroXproducto, 3);
-                                    subtotalConDescuentoIncluido = subtotal - ahorroXproducto;
-                                    subtotalConDescuentoIncluido = redondear(subtotalConDescuentoIncluido, 2);
-                                    total = total + subtotalConDescuentoIncluido;
-                                    total = redondear(total, 3);
-                                }
-                                
-                                /** SWITCH para dar de baja un articulo ****/
-                                SolicitadoSwitch.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        subtotalQueSeBorra = Double.parseDouble(SubTotalCDescuentoExtraTxt.getText().toString());
-                                        total = total - subtotalQueSeBorra;
-                                        total = redondear(total, 3);
-                                        TotalTxt.setText(String.valueOf(total));
-                                        SolicitadoSwitch.setChecked(false);
-                                        SolicitadoSwitch.setVisibility(View.GONE);
-                                        LayoutContenedor.removeView(SolicitadoSwitch);
-                                        //LayoutContenedor.removeView(productoExtraLbl);
-                                        productoExtraLbl.setVisibility(View.GONE);
-                                        //LayoutContenedor.removeView(PrecioUnitLbl);
-                                        PrecioUnitLbl.setVisibility(View.GONE);
-                                        LayoutContenedor.removeView(productoTxtDinamico);
-                                        //LayoutContenedor.removeView(PrecioUnitTxt);
-                                        PrecioUnitTxt.setVisibility(View.GONE);
-                                        //LayoutContenedor.removeView(CantidadExtraLbl);
-                                        CantidadExtraLbl.setVisibility(View.GONE);
-                                        //LayoutContenedor.removeView(CantidadExtraTxt);
-                                        CantidadExtraTxt.setVisibility(View.GONE);
-                                        //LayoutContenedor.removeView(SubtotalExtraLbl);
-                                        SubtotalExtraLbl.setVisibility(View.GONE);
-                                        LayoutContenedor.removeView(SubtotalExtraTxt);
-                                        LayoutContenedor.removeView(SubtotaCDescuentolLbl);    //new!
-                                        SubtotaCDescuentolLbl.setVisibility(View.GONE);
-                                        //LayoutContenedor.removeView(SubTotalCDescuentoExtraTxt);   //new!
-                                        SubTotalCDescuentoExtraTxt.setVisibility(View.GONE);
-                                        SubtotalExtraTxt.setVisibility(View.GONE);
-                                        //LayoutContenedor.removeView(DescuentoExtraLbl);            //new!
-                                        DescuentoExtraLbl.setVisibility(View.GONE);
-                                        //LayoutContenedor.removeView(DescuentoExtraTxt);            //new!
-                                        DescuentoExtraTxt.setVisibility(View.GONE);
-                                        ///////////////////////////////// quitar ese registro de la bd:  ///////////////////////////////////////
-                                        try {
-                                            String cod_producto_para_borrar = getCodArticulo(productoTxtDinamico.getText().toString());
-                                            //Toast.makeText(Pedidos.this, "El codigo que se busca en la tabla es: "+cod_producto_para_borrar, Toast.LENGTH_LONG).show();
-
-                                            BD admin = new BD(Pedidos.this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
-                                            SQLiteDatabase bd = admin.getWritableDatabase();
-                                            String query = "DELETE FROM pedidos_pendientes WHERE cod_producto = '" + cod_producto_para_borrar + "';";
-                                            bd.execSQL(query);
-                                            bd.close();
-                                        } catch (Exception e) {
-                                            Toast.makeText(Pedidos.this, "Error al quitar producto del carrito", Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(Pedidos.this, "Codigo error: " + e, Toast.LENGTH_LONG).show();
-                                            Log.e("Al borrar un registro", "Error!:" + e);
+                                        if (CantidadTxt.getText() == null) {
+                                            CantidadTxt.setText("0");
+                                            cantidad = 0;
+                                        } else {
+                                            cantidad = Integer.parseInt(CantidadTxt.getText().toString());      //forzar al EditText a convertir a entero la cantidad
                                         }
-                                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                        Toast.makeText(Pedidos.this, "subtotalQueSeBorra: $ " + subtotalQueSeBorra + " al total que es " + total, Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                                /****** FIN Experimento inflarLayout embebido******/
-                                /**Deshabilitando el ClienteSpinner para que no pueda volver a seleccionarse en el mismo pedido**/
-                                ClienteSpinner.setEnabled(false);
 
-                                /***Deshabilitando el ProductoSpinner para que no pueda volver a seleccionarse en el mismo pedido ***/
+                                        producto = ProductoSpinner.getSelectedItem().toString();            //conseguimos lo que esta seleccionado en el ProductoSpinner
+
+                                        Cursor fila = bd.rawQuery("SELECT * FROM Productos WHERE nombre= '" + producto + "'", null);
+                                        if (fila.moveToFirst()) {
+                                            precio = Double.parseDouble(fila.getString(3));
+                                            precio = redondear(precio, 3);
+                                            //Toast.makeText(this, "El precio del producto es $" + precio, Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(this, "Ocurrio un error al calcular el subtotal :(", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        subtotal = (precio * cantidad);
+                                        subtotal = redondear(subtotal, 3);
+                                        SubtotalExtraTxt.setText("" + subtotal);
+                                        todosLosEditText.add(SubTotalCDescuentoExtraTxt);   //new!
+                                        productoTxtDinamico.setText(producto);
+                                        bd.close();
+
+                                        //ArrayAdapter<String> AdaptadorProductoSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ListaProductos);
+                                        // la magia de calcular el total final considerando el % de descuento y el total parcial
+                                        double descuento = Double.parseDouble(String.valueOf(DescuentoProductoTxt.getText()));
+                                        descuento = redondear(descuento, 3);
+                                        //Log.(Double.parseDouble(String.valueOf(TotalParcialTxt.getText())));
+                                        double totalParcial = Double.parseDouble(TotalParcialTxt.getText().toString());
+                                        double ahorroTotal, ahorroXproducto;
+                                        double totalFinal = totalParcial;
+
+                                        if (descuento >= 0 && descuento <= 100) {
+                                            ahorroXproducto = (descuento / 100) * subtotal;
+                                            ahorroXproducto = redondear(ahorroXproducto, 3);
+                                            subtotalConDescuentoIncluido = subtotal - ahorroXproducto;
+                                            subtotalConDescuentoIncluido = redondear(subtotalConDescuentoIncluido, 2);
+                                            total = total + subtotalConDescuentoIncluido;
+                                            total = redondear(total, 3);
+                                        }
+
+                                        /** SWITCH para dar de baja un articulo ****/
+                                        SolicitadoSwitch.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                subtotalQueSeBorra = Double.parseDouble(SubTotalCDescuentoExtraTxt.getText().toString());
+                                                total = total - subtotalQueSeBorra;
+                                                total = redondear(total, 3);
+                                                TotalTxt.setText(String.valueOf(total));
+                                                SolicitadoSwitch.setChecked(false);
+                                                SolicitadoSwitch.setVisibility(View.GONE);
+                                                LayoutContenedor.removeView(SolicitadoSwitch);
+                                                //LayoutContenedor.removeView(productoExtraLbl);
+                                                productoExtraLbl.setVisibility(View.GONE);
+                                                //LayoutContenedor.removeView(PrecioUnitLbl);
+                                                PrecioUnitLbl.setVisibility(View.GONE);
+                                                LayoutContenedor.removeView(productoTxtDinamico);
+                                                //LayoutContenedor.removeView(PrecioUnitTxt);
+                                                PrecioUnitTxt.setVisibility(View.GONE);
+                                                //LayoutContenedor.removeView(CantidadExtraLbl);
+                                                CantidadExtraLbl.setVisibility(View.GONE);
+                                                //LayoutContenedor.removeView(CantidadExtraTxt);
+                                                CantidadExtraTxt.setVisibility(View.GONE);
+                                                //LayoutContenedor.removeView(SubtotalExtraLbl);
+                                                SubtotalExtraLbl.setVisibility(View.GONE);
+                                                LayoutContenedor.removeView(SubtotalExtraTxt);
+                                                LayoutContenedor.removeView(SubtotaCDescuentolLbl);    //new!
+                                                SubtotaCDescuentolLbl.setVisibility(View.GONE);
+                                                //LayoutContenedor.removeView(SubTotalCDescuentoExtraTxt);   //new!
+                                                SubTotalCDescuentoExtraTxt.setVisibility(View.GONE);
+                                                SubtotalExtraTxt.setVisibility(View.GONE);
+                                                //LayoutContenedor.removeView(DescuentoExtraLbl);            //new!
+                                                DescuentoExtraLbl.setVisibility(View.GONE);
+                                                //LayoutContenedor.removeView(DescuentoExtraTxt);            //new!
+                                                DescuentoExtraTxt.setVisibility(View.GONE);
+                                                ///////////////////////////////// quitar ese registro de la bd:  ///////////////////////////////////////
+                                                try {
+                                                    String cod_producto_para_borrar = getCodArticulo(productoTxtDinamico.getText().toString());
+                                                    BD admin = new BD(Pedidos.this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
+                                                    SQLiteDatabase bd = admin.getWritableDatabase();
+                                                    String query = "DELETE FROM pedidos_pendientes WHERE cod_producto = '" + cod_producto_para_borrar + "';";
+                                                    bd.execSQL(query);
+                                                    bd.close();
+                                                } catch (Exception e) {
+                                                    Toast.makeText(Pedidos.this, "Error al quitar producto del carrito", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(Pedidos.this, "Codigo error: " + e, Toast.LENGTH_LONG).show();
+                                                    Log.e("Al borrar un registro", "Error!:" + e);
+                                                }
+                                                Toast.makeText(Pedidos.this, "Se resto el subtotal: $ " + subtotalQueSeBorra + " al total, que es " + total, Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                        /****** FIN Experimento inflarLayout embebido******/
+                                        /**Deshabilitando el ClienteSpinner para que no pueda volver a seleccionarse en el mismo pedido**/
+                                        ClienteSpinner.setEnabled(false);
+
+                                        /***Deshabilitando el ProductoSpinner para que no pueda volver a seleccionarse en el mismo pedido ***/
                         /*
                         int posicion = ProductoSpinner.getSelectedItemPosition();
                         if (posicion > -1) {
@@ -636,27 +620,30 @@ public class
                         }
                         */
 
-                                TotalTxt.setText(String.valueOf(total));
-                                subtotalQueSeBorra=0;
-                                SubTotalCDescuentoExtraTxt.setText(String.valueOf(subtotalConDescuentoIncluido));
+                                        TotalTxt.setText(String.valueOf(total));
+                                        subtotalQueSeBorra = 0;
+                                        SubTotalCDescuentoExtraTxt.setText(String.valueOf(subtotalConDescuentoIncluido));
 
-                                Snackbar.make(v, "Se añadio un nuevo producto al carrito", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
-                                ////////////////////////////////////////////////////////////////////////////////////////
-                                String nombreCli = ClienteSpinner.getSelectedItem().toString();
-                                guardarPedidoPendiente(nombreCli);
-                                ///////////////////////////////////////////////////////////////////////////////////////
-                                CantidadTxt.setText("0");
-                                PrecioUnitarioTxt.setText("0");
-                                DescuentoProductoTxt.setText("0");
+                                        Snackbar.make(v, "Se añadio un nuevo producto al carrito", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                        ////////////////////////////////////////////////////////////////////////////////////////
+                                        String nombreCli = ClienteSpinner.getSelectedItem().toString();
+                                        guardarPedidoPendiente(nombreCli);
+                                        ///////////////////////////////////////////////////////////////////////////////////////
+                                        CantidadTxt.setText("0");
+                                        PrecioUnitarioTxt.setText("0");
+                                        DescuentoProductoTxt.setText("0");
+                                    } else {
+                                        Toast.makeText(Pedidos.this, "El campo 'Descuento' debe estar entre 0 y 100%", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(Pedidos.this, "La cantidad de venta no se admite porque ése producto solo se vende de a " + cantidad_minima_de_venta, Toast.LENGTH_LONG).show();
+                                }
                             } else {
-                                Toast.makeText(Pedidos.this, "El campo 'Descuento' debe estar entre 0 y 100%", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Pedidos.this,  "No se puede vender con Precio Unitario 0", Toast.LENGTH_SHORT).show();
                             }
-                          } else {
-                              Toast.makeText(Pedidos.this, "La cantidad de venta no se admite porque ése producto solo se vende de a "+cantidad_minima_de_venta, Toast.LENGTH_LONG).show();
-                          }
-                        } else {
-                            Toast.makeText(Pedidos.this, "Complete el campo 'Cantidad'", Toast.LENGTH_SHORT).show();
+                        } else{
+                            Toast.makeText(Pedidos.this,"Complete el campo 'Cantidad'", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(Pedidos.this, "No se puede agregar un producto sin especificar la cantidad", Toast.LENGTH_SHORT).show();
@@ -666,7 +653,6 @@ public class
                        //Pantalla de 'cargando...' aqui
 
                         //
-
                         /***** mensaje de alerta (confirmar Si/No)  ********
                          AlertDialog.Builder builder = new AlertDialog.Builder(this);
                          builder.setMessage("Vas a confirmar un nuevo pedido, estas seguro?").setPositiveButton("Si", dialogClickListener)
@@ -815,7 +801,6 @@ public class
                 return fecha;
             }
 
-
             /*****************
              * Metodo para recorrer la tabla CLientes con el Cursor
              *******************/
@@ -886,9 +871,6 @@ public class
 
             /******************************************************************************/
             /******************************************************************************/
-
-
-////////////para CLIENTES///////////
 
             /***********
              * Conseguir la cantidad de registros (filas) que tiene una tabla
@@ -1038,7 +1020,6 @@ public class
             /***********
              * Conseguir la cantidad de filas (registros) que tiene una tabla
              ***************/
-
             private long cantidadRegistrosProductos() {       // Devuelve la cantidad de filas que tiene una tabla
                 BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
                 SQLiteDatabase db = admin.getReadableDatabase();
@@ -1064,6 +1045,7 @@ public class
                 bd.close();
                 return precio;
             }
+
 
 
             public String idVendedorTxt() {
@@ -1126,8 +1108,7 @@ public class
                 } else {
                     //Toast.makeText(contexto,"Necesitas otorgar permisos para usar el GPS, hable con el Sysadmin",Toast.LENGTH_SHORT).show();
                     GPSTracker gps = new GPSTracker(contexto, Pedidos.this);
-                    // Revisar si GPS esta activado
-                    if (gps.canGetLocation()) {
+                    if (gps.canGetLocation()) {     // Revisar si GPS esta activado
                         double lat = gps.getLatitude();
                         latitud = String.valueOf(lat);
                     } else {
@@ -1159,7 +1140,6 @@ public class
             /** Que salga de la activity apretando 2 veces boton atras y que dropee tabla 'pedidos_pendientes'     **/
             private static final int INTERVALO = 2000; //2 segundos para salir
             private long tiempoPrimerClick;
-
             @Override
             public void onBackPressed() {
                 if (tiempoPrimerClick + INTERVALO > System.currentTimeMillis()) {
@@ -1254,13 +1234,11 @@ public class
                     CantidadTxt.setText("0");
                 }
             }
-
             public void descuentoNuncaNull() {
                 if (DescuentoProductoTxt.getText().toString().equals("")) {
                     DescuentoProductoTxt.setText("0");
                 }
             }
-
             public boolean consultarSiHayProductosEnCarrito(){
                 Boolean hayProductos = false;
                 BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
@@ -1322,4 +1300,18 @@ public class
                 return false;
             }
         }
+    private String direccionDelClienteElegido(String cliente) {
+        BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
+        SQLiteDatabase bd = admin.getReadableDatabase();
+        String selectQuery = "SELECT * FROM Clientes WHERE razonSocial = '" + cliente + "'";
+        Cursor cursor = bd.rawQuery(selectQuery, null);
+        String direccion = "";
+        if (cursor.moveToFirst()) {         //falso si el cursor esta vacio
+            direccion = cursor.getString(7);
+        }
+        cursor.close();
+        bd.close();
+        return direccion;
+    }
 }
+

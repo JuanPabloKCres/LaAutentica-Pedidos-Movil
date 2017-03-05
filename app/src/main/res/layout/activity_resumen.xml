@@ -58,6 +58,7 @@
             android:textAlignment="center"
             style="@style/AppTheme" />
 
+        <!--
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
@@ -68,6 +69,7 @@
             android:max="5"
             android:progress="5"
             android:indeterminateDuration="50" />
+            -->
     </FrameLayout>
 
 </FrameLayout>

@@ -1,6 +1,7 @@
 package com.example.suiza.pedidos_en_sony;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBar;
@@ -129,7 +130,19 @@ public class Resumen extends AppCompatActivity {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
+
+
+        /**redireccionar al menu*/
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                Intent i=new Intent(Resumen.this,MainActivity.class);
+                startActivity(i);
+            }
+        }, 4000);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
