@@ -140,25 +140,11 @@ public class
                 }
             }
         });
-/*
-        CantidadTxt.addTextChangedListener(new TextValidator(CantidadTxt) {
-            @Override public void validate(EditText editText, String text) {
-                if(!text.toString().equals("") && !text.toString().equals("0")  ){
-                    if ((Integer.parseInt(text.toString()) >= 1)){
-                        if(esMultiplo(Integer.parseInt(text),cantidad_minima_de_venta)){
-                            Toast.makeText(getApplicationContext(), "La cantidad se permite!", Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            Toast.makeText(getApplicationContext(), "Solo se venden multiplos de "+cantidad_minima_de_venta, Toast.LENGTH_SHORT).show();
-                            CantidadTxt.setText("");
-                        }
-                    }
-                }
-            }
-        });*/
+
 
         /** SEARCH-SPINNER*/
-
+        //ProductoSpinner.setTitle("Elegi el producto");
+        //ProductoSpinner.setPositiveButton("OK");
         /** */
         PrecioUnitarioTxt = (EditText) findViewById(R.id.PrecioUnitarioTxt);
         PrecioUnitarioTxt.setKeyListener(null);
@@ -211,6 +197,7 @@ public class
 
                 ScrollView sv = (ScrollView) findViewById(R.id.scrollView);
                 ClienteSpinner = (Spinner) findViewById(R.id.ClienteSpinner);
+
 
                 ProductoSpinner = (Spinner) findViewById(R.id.ProductoSpinner);
                 ArrayAdapter<String> AdaptadorProductoSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ListaProductos);
@@ -299,7 +286,7 @@ public class
                 if (estado.equals(Environment.MEDIA_MOUNTED)) {
                     sdDisponible = true;
                     sdAccesoEscritura = true;
-                    Toast.makeText(getApplicationContext(), "La memoria externa esta OK", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "La memoria externa esta OK", Toast.LENGTH_SHORT).show();
                 } else if (estado.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
                     sdDisponible = true;
                     sdAccesoEscritura = false;
@@ -321,7 +308,7 @@ public class
                 int i = 0;
                 if (f.exists()) {
                     try {
-                        Toast.makeText(this, "El archivo de pedido del dia ya existia, se agrego un nuevo articulo.", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "El archivo de pedido del dia ya existia, se agrego un nuevo articulo.", Toast.LENGTH_SHORT).show();
                         FileWriter fileWritter = new FileWriter(f.getAbsoluteFile(), true);
                         BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
                         ////////Sacado de StackOverflow (Componentes Visuales Dinamicos referenciados desde una lista)
@@ -334,7 +321,7 @@ public class
                         }
 
                         //bufferWritter.write(getNumeroPedido() + " , " + fechaActual() + " , " + horaActual() + " , " + getCodVendendor(ClienteSpinner.getSelectedItem().toString()) + " , " +getCodZona(ClienteSpinner.getSelectedItem().toString())+ " , "+ getCodCliente(ClienteSpinner.getSelectedItem().toString()) + " , " + getCodArticulo(strings[i]) + " , " + Cantidad + " , " + PrecioUnitario + " , " + descuentoAplicado + " , " + montoDescuentoUnidad + " , " + PrecioUnitarioCDescuento+" , "+ subtotalConDescuento + " , " + totalFinal + "," + obtenerCoordenadas() + "," + CondicionVentaSpinner.getSelectedItem().toString()+ "\n");
-                        Toast.makeText(this, "Deberia escribir, entro en el for.", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "Deberia escribir, entro en el for.", Toast.LENGTH_SHORT).show();
                         i = i + 6;
                         //}
                         //bufferWritter.write("**RESUMEN** Coordenadas: "+obtenerCoordenadas()+", Descuento: %"+descuento + " , Descuento: $" + montoDescuento + ", Total de este pedido: $" + totalFinal + "\n");
@@ -605,6 +592,8 @@ public class
                                                 Toast.makeText(Pedidos.this, "Se resto el subtotal: $ " + subtotalQueSeBorra + " al total, que es " + total, Toast.LENGTH_LONG).show();
                                             }
                                         });
+
+
                                         /****** FIN Experimento inflarLayout embebido******/
                                         /**Deshabilitando el ClienteSpinner para que no pueda volver a seleccionarse en el mismo pedido**/
                                         ClienteSpinner.setEnabled(false);
@@ -675,6 +664,7 @@ public class
                         }
                         Intent intent = new Intent(Pedidos.this, Resumen.class);
                         startActivity(intent);
+                        finish();
                     }
                     else{
                         Toast.makeText(Pedidos.this, "No se puede confirmar un pedido cuyo importe total es '0'", Toast.LENGTH_SHORT).show();

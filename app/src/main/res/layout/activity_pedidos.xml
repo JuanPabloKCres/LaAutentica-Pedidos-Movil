@@ -55,7 +55,7 @@
                 android:layout_alignParentStart="true"
                 android:textColor="#cb000000" />
 
-            <Spinner
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                 android:layout_width="259dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="-20dp"
@@ -76,7 +76,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_weight="0.32" />
 
-            <Spinner
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:id="@+id/ProductoSpinner"
@@ -85,14 +85,16 @@
                 android:layout_gravity="top|right"
                 android:layout_below="@+id/ProductoLbl"
                 android:layout_alignRight="@+id/CantidadTxt"
-                android:layout_alignEnd="@+id/CantidadTxt" />
+                android:layout_alignEnd="@+id/CantidadTxt"
+                />
+
+            ProductoSpinner.setTitle("Elegi un articulo");
+            ProductoSpinner.setPositiveButton("OK");
 
             <!--SearchSpinner
             -->
-            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+
+
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
@@ -100,7 +102,6 @@
                 android:id="@+id/CondicionVentaSpinner"
                 android:entries="@array/array_de_opciones_venta"
                 android:layout_marginTop="-20dp"
-                android:layout_below="@+id/ProductoSpinner"
                 android:textAlignment="viewEnd" />
 
             <LinearLayout

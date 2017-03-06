@@ -116,10 +116,6 @@ public class Resumen extends AppCompatActivity {
             }
         });
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        //findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -139,8 +135,9 @@ public class Resumen extends AppCompatActivity {
 
                 Intent i=new Intent(Resumen.this,MainActivity.class);
                 startActivity(i);
+                finish();
             }
-        }, 4000);
+        }, 5000);
     }
 
 
