@@ -327,7 +327,7 @@ public class
                         //bufferWritter.write("**RESUMEN** Coordenadas: "+obtenerCoordenadas()+", Descuento: %"+descuento + " , Descuento: $" + montoDescuento + ", Total de este pedido: $" + totalFinal + "\n");
                         bufferWritter.close();
 
-                        Toast.makeText(this, "se agregaron " + contadorDePulsaciones + " articulos al archivo de pedidos :) ", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "se agregaron " + contadorDePulsaciones + " articulos al archivo de pedidos :) ", Toast.LENGTH_LONG).show();
                     } catch (IOException e) {
                         Log.e("Ficheros", "Error al escribir fichero a memoria externa " + e);
                         Toast.makeText(this, "Error al escribir el fichero", Toast.LENGTH_SHORT).show();
@@ -751,7 +751,7 @@ public class
             }
 
             public String getCodArticulo(String nombre) {
-                Toast.makeText(this, "El nombre que entra a getCodArtuculo es: " + nombre, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "El nombre que entra a getCodArtuculo es: " + nombre, Toast.LENGTH_SHORT).show();
                 String codigoArticulo = "null";
                 BD admin = new BD(this, BD.NAME, BD.CURSORFACTORY, BD.VERSION);
                 SQLiteDatabase bd = admin.getWritableDatabase();
@@ -1079,7 +1079,7 @@ public class
                         coordenadas = String.valueOf(latitud) + " , " + String.valueOf(longitud);
 
                         // \n is for new line
-                        Toast.makeText(getApplicationContext(), "El pedido se tomo en - \nLat: " + latitud + "\nLong: " + longitud, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "El pedido se tomo en - \nLat: " + latitud + "\nLong: " + longitud, Toast.LENGTH_LONG).show();
                     } else {
                         // Can't get location.
                         // GPS or network is not enabled.

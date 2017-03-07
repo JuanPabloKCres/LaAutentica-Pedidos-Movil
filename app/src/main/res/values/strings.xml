@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">La Autentica - Pedidos Movil</string>
+    <string name="app_name">Pedidos Movil</string>
     <string name="action_settings">Opciones</string>
     <string name="clientesdeldiaBtn">Clientes del dia</string>
     <string name="rutasDelDiaBtn">Ruta del día</string>
