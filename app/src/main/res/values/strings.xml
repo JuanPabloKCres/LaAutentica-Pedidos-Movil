@@ -3,7 +3,7 @@
     <string name="action_settings">Opciones</string>
     <string name="clientesdeldiaBtn">Clientes del dia</string>
     <string name="rutasDelDiaBtn">Ruta del día</string>
-    <string name="productosBtn">Productos</string>
+    <string name="productosBtn">Pedidos Confirmados</string>
     <string name="nvoPedidoBtn">Nuevo Pedido</string>
     <string name="syncBtn">Actualizar Vendedor</string>
 
@@ -23,6 +23,18 @@
         <item>PROMOCION</item>
     </string-array>
 
+
+    <!--Array con los valores de la cabecera de la tabla
+    <string-array name="cabecera_tabla">
+        <item>Id de la fila</item>
+        <item>Valor</item>
+        <item>Valor 2</item>
+        <item>Valor 3</item>
+        <item>Valor 4</item>
+    </string-array>
+    -->
+
+
     <string name="title_activity_resumen">Resumen</string>
     <string name="dummy_button">Boton</string>
     <string name="dummy_content">La Autentica - Pedidos Movil</string>
@@ -40,6 +52,7 @@
     <string name="error_field_required">Este campo es requerido</string>
     <string name="permission_rationale">"Es necesario ser administrador."
     </string>
+    <string name="title_activity_info_clientes">Clientes de Hoy</string>
 
 
 </resources>

@@ -102,7 +102,7 @@
                 android:id="@+id/CondicionVentaSpinner"
                 android:entries="@array/array_de_opciones_venta"
                 android:layout_marginTop="-20dp"
-                android:textAlignment="viewEnd" />
+                android:textAlignment="textEnd" />
 
             <LinearLayout
                 android:id="@+id/layoutUno"
@@ -137,7 +137,7 @@
 
 
                 <EditText
-                    android:inputType="numberDecimal"
+                    android:inputType="number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="2"

@@ -110,6 +110,7 @@
         android:textColorHighlight="#ed7316"
         android:enabled="false" />
 
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/nvoPedidoFB"
         android:layout_width="wrap_content"
@@ -118,9 +119,10 @@
         android:src="@android:drawable/ic_menu_add"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="28dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_centerHorizontal="true" />
+
 
 
 </RelativeLayout>

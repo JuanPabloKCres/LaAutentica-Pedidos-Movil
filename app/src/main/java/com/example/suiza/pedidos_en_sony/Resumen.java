@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -96,6 +97,8 @@ public class Resumen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Toast.makeText(Resumen.this, "El pedido se guardo correctamente       ☺", Toast.LENGTH_LONG).show();
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  //para que no gire la pantalla
         setContentView(R.layout.activity_resumen);
         ActionBar actionBar = getSupportActionBar();
@@ -107,15 +110,12 @@ public class Resumen extends AppCompatActivity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
-
-        // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggle();
             }
         });
-
     }
 
     @Override
@@ -126,7 +126,6 @@ public class Resumen extends AppCompatActivity {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
-
 
         /**redireccionar al menu*/
         new Handler().postDelayed(new Runnable() {

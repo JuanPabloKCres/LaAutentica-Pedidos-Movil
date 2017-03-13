@@ -1,7 +1,5 @@
 package com.example.suiza.pedidos_en_sony;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -35,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     /*Declaracion de componentes del activiti de inicio (activity_main)*/
     private GoogleMap mMap;
     private Button clientesBtn, productosBtn, nvoPedidoBtn, sincronizarBtn, rutaDelDiaBtn;
-    private static String serverAddress = "00:15:83:0C:BF:EB";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  //para que no gire la pantalla
 
-
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.nvoPedidoFB);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
+*/
 
         /*************** Instanciar Componentes de pantala ******************/
         nvoPedidoBtn = (Button) findViewById(R.id.nvoPedidoBtn);
@@ -63,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         clientesBtn = (Button) findViewById(R.id.clientesBtn);
         productosBtn = (Button) findViewById(R.id.productosBtn);
         /********************************************************************/
+        //if(noayPedidosEnPedidostxt())
 
       /* Redireccion al pulsar los botones */
         nvoPedidoBtn.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Snackbar.make(v, "Vera un listado de los clientes a visitar hoy", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                //Intent intent = new Intent(MainActivity.this, ClientesDia.class);
-                //startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, InfoClientes.class);
+                startActivity(intent);
             }
         });
 
@@ -107,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Snackbar.make(v, "Vera un listado de los productos disponibles para preventa hoy", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                //Intent intent = new Intent(MainActivity.this, ProductosDia.class);
-                //startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, PedidosTomados.class);
+                startActivity(intent);
             }
         });
 
@@ -118,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, Pedidos.class));
             }
         });
-
 
     }
 
@@ -230,4 +227,34 @@ public class MainActivity extends AppCompatActivity {
         }
         tiempoPrimerClick = System.currentTimeMillis();
     }
+
+
+
+
+    /****** Lee pedidos.txt para saber si tienen algo  **********/
+    /*
+    private Boolean hayPedidosEnPedidostxt throws FileNotFoundException {
+        //Encuentra el directorio de la Memoria Externa usando la API
+        File ruta_sd = Environment.getExternalStorageDirectory();
+        File archivo = new File(ruta_sd.getAbsolutePath() + "/Android/data/LaAutentica/pedidos", "pedidos.txt");
+        ByteArrayOutputStream arrayStrings = new ByteArrayOutputStream();  //convierte los bytes del recurso abierto a un array de Strings
+        InputStream targetStream = new FileInputStream(archivo);
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(archivo));
+
+
+            if (br.readLine() == null) {
+                System.out.println("No errors, and file empty");
+            }
+
+
+            targetStream.close();
+            br.close();
+        } catch (IOException e) {
+            Toast.makeText(this, "error: " + e, Toast.LENGTH_LONG);
+        }
+        return true;
+    }
+    */
+
 }

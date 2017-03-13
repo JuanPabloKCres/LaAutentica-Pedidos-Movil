@@ -54,7 +54,7 @@
             android:text="El pedido se almaceno satisfactoriamente!"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal|bottom"
-            android:textSize="15dp"
+            android:textSize="23dp"
             android:textAlignment="center"
             style="@style/AppTheme" />
 

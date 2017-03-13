@@ -3,22 +3,17 @@ package com.example.suiza.pedidos_en_sony;
 
 import android.Manifest;
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
+
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -32,6 +27,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -67,8 +63,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class
-        Pedidos extends AppCompatActivity implements View.OnClickListener {
+public class Pedidos extends AppCompatActivity implements View.OnClickListener {
     private EditText CantidadTxt;
     private EditText PrecioUnitarioTxt;
     private EditText SubtotalTxt;
@@ -124,14 +119,15 @@ public class
         CantidadTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 cantidadNuncaNull();
-                if(!CantidadTxt.getText().toString().equals("") && !CantidadTxt.getText().toString().equals("0")  ) {
-                    if(cantidad_minima_de_venta>1) {
+                if (!CantidadTxt.getText().toString().equals("") && !CantidadTxt.getText().toString().equals("0")) {
+                    if (cantidad_minima_de_venta > 1) {
                         validarCantidadIngresada();
                     }
                 }
             }
         });
 
+        /**Comodidad de Controles Descuento-Catidad (blanqueos automaticos)*/
         CantidadTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,8 +136,15 @@ public class
                 }
             }
         });
+        CantidadTxt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                CantidadTxt.setText("");
+                return false;
+            }
+        });
 
-
+        /******************************************************************/
         /** SEARCH-SPINNER*/
         //ProductoSpinner.setTitle("Elegi el producto");
         //ProductoSpinner.setPositiveButton("OK");
@@ -210,7 +213,6 @@ public class
                 CondicionVentaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        //Toast.makeText(Pedidos.this, "Se selecciono: " + CondicionVentaSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
                         if (CondicionVentaSpinner.getSelectedItem().toString().equals("PROMOCION")) {
                             DescuentoProductoTxt.setText("100");
                             DescuentoProductoTxt.setEnabled(false);
@@ -242,7 +244,7 @@ public class
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         String cliente = ClienteSpinner.getSelectedItem().toString();
                         String direccion = direccionDelClienteElegido(cliente);
-                        Toast.makeText(getApplicationContext(), "Direccion del cliente: "+direccion, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Direccion del cliente seleccionado: \n\n"+direccion, Toast.LENGTH_LONG).show();
 
                     }
                     @Override
@@ -268,7 +270,6 @@ public class
                     }
                 });
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
                 /********* Ni bien se abre el activity, sincroniza BD desde TXT *****************/
                 syncClientesconTxt();
                 syncProductosconTxt();
@@ -300,15 +301,14 @@ public class
        /*Ecribir en memoria externa*/
                 File direccionMemoriaExterna = Environment.getExternalStorageDirectory();
                 File f = new File(direccionMemoriaExterna + "/Android/data/LaAutentica/pedidos", "Pedidos.txt");
-                double subtotal = Double.parseDouble(String.valueOf(CantidadTxt.getText())) * Double.parseDouble(String.valueOf(PrecioUnitarioTxt.getText()));
-                double precio_unitario = Double.parseDouble((String.valueOf(PrecioUnitarioTxt.getText())));
-                double totalParcial = Double.parseDouble(String.valueOf(TotalParcialTxt.getText()));
-                double descuento = Double.parseDouble(String.valueOf(DescuentoProductoTxt.getText()));
-                double totalFinal = Double.parseDouble(String.valueOf(TotalTxt.getText()));
+                //double subtotal = Double.parseDouble(String.valueOf(CantidadTxt.getText())) * Double.parseDouble(String.valueOf(PrecioUnitarioTxt.getText()));
+                //double precio_unitario = Double.parseDouble((String.valueOf(PrecioUnitarioTxt.getText())));
+                //double totalParcial = Double.parseDouble(String.valueOf(TotalParcialTxt.getText()));
+                //double descuento = Double.parseDouble(String.valueOf(DescuentoProductoTxt.getText()));
+                //double totalFinal = Double.parseDouble(String.valueOf(TotalTxt.getText()));
                 int i = 0;
                 if (f.exists()) {
                     try {
-                        //Toast.makeText(this, "El archivo de pedido del dia ya existia, se agrego un nuevo articulo.", Toast.LENGTH_SHORT).show();
                         FileWriter fileWritter = new FileWriter(f.getAbsoluteFile(), true);
                         BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
                         ////////Sacado de StackOverflow (Componentes Visuales Dinamicos referenciados desde una lista)
@@ -319,9 +319,7 @@ public class
                         for (int pedidoFila = 0; pedidoFila < ListaPedidos.size(); pedidoFila++) {
                             bufferWritter.write(ListaPedidos.get(pedidoFila) + "\n");
                         }
-
                         //bufferWritter.write(getNumeroPedido() + " , " + fechaActual() + " , " + horaActual() + " , " + getCodVendendor(ClienteSpinner.getSelectedItem().toString()) + " , " +getCodZona(ClienteSpinner.getSelectedItem().toString())+ " , "+ getCodCliente(ClienteSpinner.getSelectedItem().toString()) + " , " + getCodArticulo(strings[i]) + " , " + Cantidad + " , " + PrecioUnitario + " , " + descuentoAplicado + " , " + montoDescuentoUnidad + " , " + PrecioUnitarioCDescuento+" , "+ subtotalConDescuento + " , " + totalFinal + "," + obtenerCoordenadas() + "," + CondicionVentaSpinner.getSelectedItem().toString()+ "\n");
-                        //Toast.makeText(this, "Deberia escribir, entro en el for.", Toast.LENGTH_SHORT).show();
                         i = i + 6;
                         //}
                         //bufferWritter.write("**RESUMEN** Coordenadas: "+obtenerCoordenadas()+", Descuento: %"+descuento + " , Descuento: $" + montoDescuento + ", Total de este pedido: $" + totalFinal + "\n");
@@ -369,6 +367,11 @@ public class
                                         contadorDePulsaciones++;
                                         Snackbar.make(v, "Se añadio un Articulo al pedido, (" + (contadorDePulsaciones - 1) + ")", Snackbar.LENGTH_LONG)
                                                 .setAction("Action", null).show();
+
+                                        /** hacer que SIEMPRE que elija CAMBIO o PROMOCION el descuento sea de 100% */
+                                        if(CondicionVentaSpinner.getSelectedItem().toString().equals("CAMBIO") || CondicionVentaSpinner.getSelectedItem().toString().equals("PROMOCION")){
+                                            DescuentoProductoTxt.setText("100");
+                                        }
                                         /****** INICIO inflarLayout programaticamente ******/
                                         final TextView productoExtraLbl;
                                         final TextView CantidadExtraLbl;
@@ -589,7 +592,8 @@ public class
                                                     Toast.makeText(Pedidos.this, "Codigo error: " + e, Toast.LENGTH_LONG).show();
                                                     Log.e("Al borrar un registro", "Error!:" + e);
                                                 }
-                                                Toast.makeText(Pedidos.this, "Se resto el subtotal: $ " + subtotalQueSeBorra + " al total, que es " + total, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(Pedidos.this, "Se quito un producto de la lista de pedidos", Toast.LENGTH_LONG).show();
+                                                //Toast.makeText(Pedidos.this, "Se resto el subtotal: $ " + subtotalQueSeBorra + " al total, que es " + total, Toast.LENGTH_LONG).show();
                                             }
                                         });
 
@@ -637,6 +641,7 @@ public class
                     } else {
                         Toast.makeText(Pedidos.this, "No se puede agregar un producto sin especificar la cantidad", Toast.LENGTH_SHORT).show();
                     }
+                    CondicionVentaSpinner.setSelection(0);
                 } else if (v.getId() == R.id.ConfirmarPedidoBtn) {
                     if((total>0) && (consultarSiHayProductosEnCarrito()==true)) {
                        //Pantalla de 'cargando...' aqui
@@ -873,9 +878,7 @@ public class
                 return registros;
             }
 
-            /**********
-             * Lee el txt fuente y devuelve su contenido separado por los "enter"
-             **********/
+            /****** Lee el txt fuente y devuelve su contenido separado por los "enter"  **********/
             private String[] leerArchivoClientesSD() throws FileNotFoundException {
                 //Encuentra el directorio de la Memoria Externa usando la API
                 File ruta_sd = Environment.getExternalStorageDirectory();
@@ -892,13 +895,6 @@ public class
                         i = targetStream.read();
                     }
                     targetStream.close();
-                    //int i = 0;
-            /*
-            while ((line = br.readLine()) != null) {
-                arrayStrings.write(i);
-                i++;
-            }
-            */
                     br.close();
                 } catch (IOException e) {
                     Toast.makeText(this, "error: " + e, Toast.LENGTH_LONG);
@@ -906,9 +902,7 @@ public class
                 return arrayStrings.toString().split("\n");       //"\n" = "enter"
             }
 
-            /***************
-             * Meter el txt en una tabla de BD
-             ********************/
+            /**************** Meter el txt en una tabla de BD    ********************/
             private void syncClientesconTxt() {
                 //if (cantidadRegistrosClientes() == 0) {         //SI la tabla "Clientes" tiene algun registro, dropear la tabla
                 String[] texto = new String[0];           //"texto" tendra un array de strings donde cada renglon es una celda
@@ -940,7 +934,7 @@ public class
                     valoresContenidos.put("longitud", linea[12]);
                     db.insert("Clientes", null, valoresContenidos);
                 }
-                Toast.makeText(this, "Clientes: " + texto.length, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Clientes: " + texto.length, Toast.LENGTH_SHORT).show();
                 db.setTransactionSuccessful();
                 db.endTransaction();
                 //} else {
