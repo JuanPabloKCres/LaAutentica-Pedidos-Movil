@@ -74,9 +74,9 @@ public class InfoClientes extends AppCompatActivity {
             String[] linea = texto[i].split(";");
             ArrayList<String> elementos = new ArrayList<String>();
                 /*cargando fila*/
-            elementos.add(linea[1]);    // razon social
-            elementos.add(linea[4]);    // direccion
-            elementos.add(linea[5]);    // localidad
+            elementos.add(linea[1].trim());    // razon social
+            elementos.add(linea[4].trim());    // direccion
+            elementos.add(linea[5].trim());    // localidad
             tablaclientes.agregarFilaTabla(elementos);
         }
     }
